@@ -22,13 +22,7 @@ module.exports = {
         items: [
           { text: 'GitHub', link: 'https://github.com/recoluan', icon: 'reco-github' }
         ]
-      },
-	  {
-		text:'练手项目',
-		icon:'reco-message',
-		
-		
-	  }
+      }
     ],
     sidebar: {
       '/docs/theme-reco/': [
