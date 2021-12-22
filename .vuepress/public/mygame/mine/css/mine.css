@@ -1,0 +1,77 @@
+body{
+    overflow-y: hidden;
+}
+div{
+	border:1px solid black;
+	
+}
+.mainContent{
+	margin:0 auto;
+	width:90%;
+	border:1px solid black;
+}
+.mineContent{
+	padding:10px;
+}
+.toolContent{
+	width:100%;
+	border:1px solid black;
+}
+.toolContent input{
+	width:40px;
+}
+.setting,.timerContent{
+	width:20%;
+}
+.clearflex:after{
+	 content:"."; display:block; height:0; visibility:hidden; clear:both; 
+}
+.mineTable{
+	margin:0 auto;
+	border-style:none;
+}
+.mineTable td{
+	border-radius: 5px;
+	box-shadow: 2px 1px 0px 0px;
+	font-size: 22px;
+}
+
+.mineTable td:active,.activeTd{
+	box-shadow: inset -2px -1px 0px 0px !important;
+}
+
+.isMine1{
+	border:1px solid red;
+}
+
+.normal{
+	background:#d9d9d9;
+}
+.doubt{
+	background:#929292;
+	color: white;
+}
+.define{
+	background:#929292;
+	color: white;
+}
+.boom{
+	background:red;
+	color: white;
+}
+
+.mineTd div{
+	width:28px;
+	height:28px;
+    border: none;
+    top: 0px;
+    text-align: center;
+
+	border-radius: 5px;
+	left:1px
+}
+.mineTd div span{
+	vertical-align: middle;
+ 
+	cursor:default;
+}

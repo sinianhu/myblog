@@ -3,7 +3,7 @@ module.exports = {
   description: '我的个人博客',
   dest: 'public',
   head: [
-    ['link', { rel: 'icon', href: '/favicon.ico' }],
+    ['link', { rel: 'icon', href: '/img/favicon.ico' }],
     ['meta', { name: 'viewport', content: 'width=device-width,initial-scale=1,user-scalable=no' }]
   ],
   theme: 'reco',
@@ -17,11 +17,16 @@ module.exports = {
           { text: 'vuepress-reco', link: '/docs/theme-reco/' }
         ]
       },
-      { text: 'Contact', 
+      { text: '练手项目', 
         icon: 'reco-message',
         items: [
-          { text: 'GitHub', link: 'https://github.com/recoluan', icon: 'reco-github' }
+          { text: '扫雷', link: '/mygame/mine/mine.html', icon: 'reco-github',target:'_blank'}
         ]
+      },
+      { text: '扫雷', 
+        icon: 'reco-message',
+		link:'/mygame/mine/mine.html',
+		target:'_blank'
       }
     ],
     sidebar: {
@@ -59,7 +64,7 @@ module.exports = {
       },
 	  */
     ],
-    logo: '/logo.png',
+    logo: '/img/logo.png',
     // 搜索设置
     search: true,
     searchMaxSuggestions: 10,
@@ -70,7 +75,7 @@ module.exports = {
     // 作者
     author: '思念虎',
     // 作者头像
-    authorAvatar: '/avatar.png',
+    authorAvatar: '/img/avatar.png',
     // 备案号
     record: 'xxxx',
     // 项目开始时间
