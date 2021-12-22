@@ -1,6 +1,6 @@
 module.exports = {
-  title: "vuepress-theme-reco",
-  description: 'A simple and beautiful vuepress blog theme .',
+  title: "虎博站",
+  description: '我的个人博客',
   dest: 'public',
   head: [
     ['link', { rel: 'icon', href: '/favicon.ico' }],
@@ -9,9 +9,9 @@ module.exports = {
   theme: 'reco',
   themeConfig: {
     nav: [
-      { text: 'Home', link: '/', icon: 'reco-home' },
-      { text: 'TimeLine', link: '/timeline/', icon: 'reco-date' },
-      { text: 'Docs', 
+      { text: '首页', link: '/', icon: 'reco-home' },
+      { text: '时间轴', link: '/timeline/', icon: 'reco-date' },
+      { text: '文档', 
         icon: 'reco-message',
         items: [
           { text: 'vuepress-reco', link: '/docs/theme-reco/' }
@@ -22,7 +22,13 @@ module.exports = {
         items: [
           { text: 'GitHub', link: 'https://github.com/recoluan', icon: 'reco-github' }
         ]
-      }
+      },
+	  {
+		text:'练手项目',
+		icon:'reco-message',
+		
+		
+	  }
     ],
     sidebar: {
       '/docs/theme-reco/': [
@@ -45,7 +51,7 @@ module.exports = {
       }
     },
     friendLink: [
-      {
+      /*{
         title: '午后南杂',
         desc: 'Enjoy when you can, and endure when you must.',
         email: '1156743527@qq.com',
@@ -57,6 +63,7 @@ module.exports = {
         avatar: "https://vuepress-theme-reco.recoluan.com/icon_vuepress_reco.png",
         link: 'https://vuepress-theme-reco.recoluan.com'
       },
+	  */
     ],
     logo: '/logo.png',
     // 搜索设置
@@ -67,13 +74,13 @@ module.exports = {
     // 最后更新时间
     lastUpdated: 'Last Updated',
     // 作者
-    author: 'reco_luan',
+    author: '思念虎',
     // 作者头像
     authorAvatar: '/avatar.png',
     // 备案号
     record: 'xxxx',
     // 项目开始时间
-    startYear: '2017'
+    startYear: '2021/12/22'
     /**
      * 密钥 (if your blog is private)
      */
