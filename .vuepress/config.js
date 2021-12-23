@@ -6,47 +6,39 @@ module.exports = {
     ['link', { rel: 'icon', href: '/img/favicon.ico' }],
     ['meta', { name: 'viewport', content: 'width=device-width,initial-scale=1,user-scalable=no' }]
   ],
+  hero:{
+	title:'虎博站',
+	description:'我的个人博客',
+  },
   theme: 'reco',
   themeConfig: {
     nav: [
       { text: '首页', link: '/', icon: 'reco-home' },
       { text: '时间轴', link: '/timeline/', icon: 'reco-date' },
-      { text: '文档', 
-        icon: 'reco-message',
-        items: [
-          { text: 'vuepress-reco', link: '/docs/theme-reco/' }
-        ]
-      },
       { text: '练手项目', 
         icon: 'reco-message',
-        items: [
-          { text: '扫雷', link: 'mygame/mine/mine.html', icon: 'reco-github',target:'_blank'}
-        ]
-      },
-      { text: '扫雷', 
-        icon: 'reco-message',
-		link:'mygame/mine/mine.html',
-		target:'_blank'
+		link: '/docs/theme-reco/'
       }
     ],
     sidebar: {
       '/docs/theme-reco/': [
-        '',
-        'theme',
-        'plugin',
-        'api'
-      ]
+			'',
+			'mine',
+			'theme',
+			'plugin',
+			'api',
+		]
     },  
     type: 'blog',
     // 博客设置
     blogConfig: {
       category: {
         location: 2, // 在导航栏菜单中所占的位置，默认2
-        text: 'Category' // 默认 “分类”
+        text: '分类' // 默认 “分类”
       },
       tag: {
         location: 3, // 在导航栏菜单中所占的位置，默认3
-        text: 'Tag' // 默认 “标签”
+        text: '标签' // 默认 “标签”
       }
     },
     friendLink: [
