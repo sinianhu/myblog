@@ -26,7 +26,7 @@ module.exports = {
 			'mine',
 			'theme',
 			'plugin',
-			'api',
+			'api'
 		]
     },  
     type: 'blog',
