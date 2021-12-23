@@ -1,8 +1,8 @@
 ---
 home: true
-heroText: vuepress-theme-reco
-tagline: A simple and beautiful vuepress blog theme.
-# heroImage: /hero.png
+heroText: 虎博站
+tagline: 一个消磨时间的地方.
+# heroImage: /img/hero.png
 # heroImageStyle: {
 #   maxWidth: '600px',
 #   width: '100%',
