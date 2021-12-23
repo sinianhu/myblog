@@ -20,12 +20,12 @@ module.exports = {
       { text: '练手项目', 
         icon: 'reco-message',
         items: [
-          { text: '扫雷', link: '/mygame/mine/mine.html', icon: 'reco-github',target:'_blank'}
+          { text: '扫雷', link: 'mygame/mine/mine.html', icon: 'reco-github',target:'_blank'}
         ]
       },
       { text: '扫雷', 
         icon: 'reco-message',
-		link:'/mygame/mine/mine.html',
+		link:'mygame/mine/mine.html',
 		target:'_blank'
       }
     ],
