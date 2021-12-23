@@ -17,16 +17,12 @@ module.exports = {
       { text: '时间轴', link: '/timeline/', icon: 'reco-date' },
       { text: '练手项目', 
         icon: 'reco-message',
-		link: '/docs/theme-reco/'
+		link: '/docs/mygame/mine.html'
       }
     ],
     sidebar: {
-      '/docs/theme-reco/': [
-			'',
-			'mine',
-			'theme',
-			'plugin',
-			'api'
+      '/docs/mygame/': [
+			'mine'
 		]
     },  
     type: 'blog',
