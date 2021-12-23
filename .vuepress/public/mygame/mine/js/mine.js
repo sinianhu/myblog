@@ -400,6 +400,9 @@ var mineContent = new Vue({
 				var rr = Math.round(Math.random()*(row-1));
 				//随机列
 				var rc = Math.round(Math.random()*(col-1));
+				if(flag&&rr==erow&&ecol==rc){
+					continue;
+				}
 				this.mineTds.pushNoRepeat(rr+","+rc);
 				mineContent.mine[rr][rc].isMine = true;
 			}
