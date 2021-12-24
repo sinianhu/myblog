@@ -1,0 +1,65 @@
+<html>
+	<head>
+		<title></title>
+	</head>
+	<script src="../lib/vue.js"></script>
+	<script src="../lib/jquery-1.10.2.min.js"></script>
+	<link rel="stylesheet" href="css/tower.css"></link>
+	<link rel="stylesheet" href="css/bg.css"></link>
+	<script src="js/maps.js"></script>
+
+	
+	<body ondragstart="return false" oncontextmenu="return false" onselectstart="return false" >
+		<div id="tower">
+			<div class="left">
+				<div  class="propArea">
+					第<input v-model="floor" />层<br/>
+					上<input v-model="hero.top"/><br/>
+					左<input v-model="hero.left"/><br/>
+					
+					行<input v-model="hero.top/64"/><br/>
+					列<input v-model="hero.left/64"/><br/>
+				</div>
+			</div>
+			<div class="right">
+				<div class="gameArea">
+					<div class="gameDiv">
+						<table class="gameTable">
+							<tr v-for="rindex of 11 "  >
+								<td v-for="cindex of 11"> 
+								
+									<div class="eleTd " 
+										:class="`bg-${map[floor][rindex-1][cindex-1]}`"
+									>
+									
+									</div>
+								</td>
+							</tr>
+							
+						</table>
+						
+						<!-- 英雄 -->
+						<div class="eleTd hero" 
+						@keydown.left="goLeft($event)" 
+						@keydown.up="goUp($event)" 
+						@keydown.right="goRight($event)" 
+						@keydown.down="goDown($event)" 
+						:class="`heroFaceTo-${hero.faceTo}`" 
+						:style="`top:${hero.top}px;left:${hero.left}px;`" >
+						</div>
+						
+						<!-- 文本对话框 -->
+						<div class="dialogBox">
+							
+						</div>
+						
+					</div>
+				</div>
+			</div>
+		
+		</div>	
+	</body>
+	<script src="js/tower.js" defer></script>
+
+	
+</html>

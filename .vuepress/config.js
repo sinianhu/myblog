@@ -22,7 +22,8 @@ module.exports = {
     ],
     sidebar: {
       '/docs/mygame/': [
-			'mine'
+			'mine',
+			'tower'
 		]
     },  
     type: 'blog',

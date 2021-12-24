@@ -1,0 +1,68 @@
+body{
+    overflow-y: hidden;
+	display: flex;
+    align-items: center;
+}
+
+#tower{
+	width: 1054px;
+    height: 750px;
+    border: 1px solid black;
+    margin: 0 auto;
+	background:black;
+}
+
+.left{
+	float: left;
+    width: 300px;
+    height: 750px;
+    border: 1px solid black;
+	display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+.propArea{
+	width:280px;
+	height:704px;
+	border: 1px solid black;
+	background:white;
+}
+
+.right{
+	float: right;
+    position: relative;
+    width: 750px;
+    height: 100%;
+    border: 1px solid black;
+	display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.gameArea{
+	width:704px;
+	height:704px;
+	border:1px solid black;
+	background:white;
+}
+.gameDiv{
+	position:relative;
+}
+.gameTable{
+	border-spacing: 0px;
+	position:relative;
+}
+.gameTable td{
+	padding:0px;
+}
+.eleTd{
+	width:64px;
+	height:64px;
+	background-size:cover;
+}
+.hero{
+	position:absolute;
+}
+
+
