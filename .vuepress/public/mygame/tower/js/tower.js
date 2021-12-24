@@ -31,7 +31,7 @@ var game = new Vue({
 		//键盘按下事件
 		keyDown:function(code){
 			
-			if(moveFlag){//移动标志
+			if(this.moveFlag){//移动标志
 				if(37==code){//左
 					this.goLeft();
 				}else if(38==code){//上
