@@ -49,10 +49,39 @@
 						</div>
 						
 						<!-- 文本对话框 -->
-						<div class="dialogBox">
-							
+						<div class="dialogBox" v-if="dialogBox.show!='none'" :class="`${dialogBox.show}DialogBox`">
+							<table>
+								<tr >
+									<td rowspan="3" style="vertical-align: top"> 
+										<div class="eleTd " 
+										:class="`bg-${dialogBox.role}`"
+									>
+									
+									</td>
+									<td>
+										<span>{{dialogBox.roleName}}</span>
+									</td>
+								</tr>
+								<tr>
+									<td>
+										<span>{{dialogBox.text[0]}}</span>
+									</td>
+								</tr>
+								<tr>
+									<td>
+										<span>{{dialogBox.text[1]}}</span>
+									</td>
+								</tr>
+							</table>
+							<div class="spaceDiv">
+								   -- Space --
+							</div>
+
 						</div>
 						
+						
+
+
 					</div>
 				</div>
 			</div>
