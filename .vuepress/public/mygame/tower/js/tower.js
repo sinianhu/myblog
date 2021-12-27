@@ -21,7 +21,9 @@ var game = new Vue({
 		floor:0,//楼层
 		moveFlag:true,//是否可移动标志
 		taklingFlag:false,//对话模式标志
-		shadeStatus:false,
+		shadeStatus:false,//蒙版显示状态
+		tipStatus:false,//提示框状态
+		tipText:'',//提示文字
 		map:maps,
 		hero:{
 			faceTo:1,//0上，1下，2左，3右
@@ -369,6 +371,9 @@ var game = new Vue({
 		},
 		shadeStatusChange(){//蒙版状态变化
 			return this.shadeStatus;
+		},
+		tipStatusChange(){//提示状态变化
+			return this.tipStatus;
 		}
 	},
 	watch:{//监听
@@ -387,6 +392,13 @@ var game = new Vue({
 			}
 		},
 		shadeStatusChange:function(flag){
+			if(flag){
+				game.moveFlag = false;
+			}else{
+				game.moveFlag = true;
+			}
+		},
+		tipStatusChange:function(flag){
 			if(flag){
 				game.moveFlag = false;
 			}else{

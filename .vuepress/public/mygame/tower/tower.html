@@ -9,8 +9,7 @@
 	<script src="js/initimg.js"></script>
 	<script src="js/maps.js"></script>
 
-	
-	<body ondragstart="return false" oncontextmenu="return false" onselectstart="return false" >
+	<body  ondragstart="return false" oncontextmenu="return false" onselectstart="return false" >
 		<div id="tower">
 			<div class="left">
 				<div  class="propArea">
@@ -116,7 +115,7 @@
 						
 						<!-- 遮罩 -->
 						<transition  name="fade">
-							<div class="shadeBox" v-if="shadeStatus">
+							<div class="shadeBox"  v-if="shadeStatus">
 								<img src="img/shadeText.png">
 								<br/>
 								<span>
@@ -192,6 +191,13 @@
 							
 							
 						</div>
+						
+						<!-- 提示框 1秒后自动消失 -->
+						<transition  name="fade">
+							<div class="tipBox" v-if="tipStatus">
+								<span>{{tipText}}</span>
+							</div>
+						</transition >
 						
 						<!-- 文本对话框 -->
 						<div class="dialogBox" v-if="dialogBox.show!='none'" :class="`${dialogBox.show}DialogBox`">
