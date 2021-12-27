@@ -14,12 +14,86 @@
 		<div id="tower">
 			<div class="left">
 				<div  class="propArea">
-					第<input v-model="floor" />层<br/>
-					上<input v-model="hero.top"/><br/>
-					左<input v-model="hero.left"/><br/>
+					<div class="statusArea"> 
+						<table>
+							<tr>
+								<td style="width:20%"><div class="eleTd bg-hero-1"></div></td>
+								<td>{{hero.status.level}}级</td>
+							</tr>
+							<tr>
+								<td>生命</td>
+								<td>{{hero.status.life}}</td>
+							</tr>
+							<tr>
+								<td>攻击</td>
+								<td>{{hero.status.attack}}</td>
+							</tr>
+							<tr>
+								<td>防御</td>
+								<td>{{hero.status.defence}}</td>
+							</tr>
+							<tr>
+								<td>金币</td>
+								<td>{{hero.status.gold}}</td>
+							</tr>
+							<tr>
+								<td>经验</td>
+								<td>{{hero.status.exp}}</td>
+							</tr>
+						</table>
+					</div>
+					<div class="keysArea">
+						<table>
+							<tr>
+								<td style="width:20%"><div class="ele40Td bg-2001"></td>
+								<td class="keysTd">{{hero.tools.yellowKey}}个</td>
+							</tr>
+							<tr>
+								<td><div class="ele40Td bg-2002"></td>
+								<td class="keysTd">{{hero.tools.blueKey}}个</td>
+							</tr>
+							<tr>
+								<td><div class="ele40Td bg-2003"></td>
+								<td class="keysTd">{{hero.tools.redKey}}个</td>
+							</tr>
+							
+						</table>
+					</div>
+					<div class="floorArea">
+							{{floor==0?'序章':'第'+floor+'层'}}
+					</div>
 					
-					行<input v-model="hero.top/64"/><br/>
-					列<input v-model="hero.left/64"/><br/>
+					<div class="toolsArea">
+						<table>
+							<tr>
+								<td><div class="eleTd bg-2009" v-if="hero.tools.handBook"></div></td><!-- 图鉴 -->
+								<td><div class="eleTd ">
+							
+								</div></td>
+								<td><div class="eleTd"></div></td>
+								<td><div class="eleTd "></div></td>
+							</tr>
+							<tr>
+								<td><div class="eleTd "></div></td>
+								<td><div class="eleTd "></div></td>
+								<td><div class="eleTd "></div></td>
+								<td><div class="eleTd "></div></td>
+							</tr>
+						</table>
+					</div>
+					<div class="settingArea">
+						<table>
+							<tr>
+								<td>S 保存</td>
+								<td>Q 退出程序</td>
+							</tr>
+							<tr>
+								<td>A 读取</td>
+								<td>R 重新开始</td>
+							</tr>
+						</table>
+					</div>
+			
 				</div>
 			</div>
 			<div class="right">
@@ -39,6 +113,19 @@
 							
 						</table>
 						
+						
+						<!-- 遮罩 -->
+						<transition  name="fade">
+							<div class="shadeBox" v-if="shadeStatus">
+								<img src="img/shadeText.png">
+								<br/>
+								<span>
+								-- {{floor==0?'序章':'第'+floor+'层'}} --
+								</span>
+							</div>
+						</transition >
+						
+						
 						<!-- 英雄 -->
 						<div class="eleTd hero" 
 						@keydown.left="goLeft($event)" 
@@ -47,6 +134,63 @@
 						@keydown.down="goDown($event)" 
 						:class="`heroFaceTo-${hero.faceTo}`" 
 						:style="`top:${hero.top}px;left:${hero.left}px;`" >
+						</div>
+						
+						
+						<!-- 战斗框 -->
+						<div class="attackBox" v-if="hero.attackStatus.isAttck">
+							<table>
+								<tr>
+									<td rowspan="4" style="width:140px">
+										<div class="attackRole attackMonster">
+											<div class="eleTd" :class="`bg-${hero.attackStatus.monster.code}`"></div>
+										</div>
+									</td>
+									<td class="whiteLineTd">
+										生命值:
+									</td>
+									<td rowspan="6" class="centerText">
+										<img src="img/vs.png" width="128px"/>
+									</td>
+									<td class="whiteLineTd rightText">
+										:生命值
+									</td>
+									<td rowspan="4"  style="width:140px">
+										<div class="attackRole attackHero">
+											<div class="eleTd bg-hero-1"></div>
+										</div>
+									</td>
+								</tr>
+								<tr>
+									<td class="rightText italic">{{hero.attackStatus.monster.life}}</td>
+									<td class="leftText italic">{{hero.status.life}}</td>
+								</tr>
+								<tr>
+									<td class="whiteLineTd">攻击力：</td>
+									<td class="whiteLineTd rightText">：攻击力</td>
+								</tr>
+								<tr>
+									<td class="rightText italic">{{hero.attackStatus.monster.attack}}</td>
+									<td class="leftText italic">{{hero.status.attack}}</td>
+								</tr>
+								<tr>
+									<td rowspan="2" style="text-align:center">
+										<img src="img/monster.png" width="100px"/>
+									</td>
+									<td class="whiteLineTd">防御力：</td>
+									<td class="whiteLineTd rightText">：防御力</td>
+									<td rowspan="2" style="text-align:center">
+										<img src="img/hero.png" width="100px"/>
+									</td>
+								</tr>
+								<tr>
+									<td class="rightText italic">{{hero.attackStatus.monster.defence}}</td>
+									<td class="leftText italic">{{hero.status.defence}}</td>
+								</tr>
+							
+							</table>
+							
+							
 						</div>
 						
 						<!-- 文本对话框 -->
