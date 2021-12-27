@@ -1,5 +1,5 @@
 body{
-    overflow-y: hidden;
+    overflow-y: auto;
 	display: flex;
     align-items: center;
 }
@@ -63,6 +63,43 @@ body{
 }
 .hero{
 	position:absolute;
+}
+
+.dialogBox{
+	width: 450px;
+    height: 140px;
+    background-image: url(../img/4.jpg);
+    position: absolute;
+    border: 4px solid #794825;
+    z-index: 100;
+}
+/*其余角色对话框*/
+.otherDialogBox{
+    top: 260px;
+    left: -30px;
+}
+
+.heroDialogBox{
+	top: 420px;
+    left: 240px;
+}
+
+.dialogBox span{
+	color:white;
+	font-size:25px;
+}
+
+.dialogBox tr {
+    height: 40px;
+}
+
+.spaceDiv{
+	color: white;
+    font-weight: bold;
+    float: right;
+    position: relative;
+    bottom: 10px;
+    right: 10px;
 }
 
 
