@@ -337,7 +337,7 @@ var game = new Vue({
 			var ha = this.hero.status.attack;
 			var hd = this.hero.status.defence;
 			var ext = 0;
-			if(type==3555){//TODO 预留魔法攻击怪物 直接削1/3血量
+			if(type==3019){//TODO 预留魔法攻击怪物 直接削1/3血量
 				ext = Math.round(hl/3);
 				hl = Math.round(hl-ext);
 			}
