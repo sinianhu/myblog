@@ -36,7 +36,7 @@ var game = new Vue({
 				blueKey:0,//蓝钥匙
 				redKey:0,//红钥匙
 				handBook:{//图鉴
-					have:true,
+					have:false,
 					show:false,
 					monsters:[
 					]
