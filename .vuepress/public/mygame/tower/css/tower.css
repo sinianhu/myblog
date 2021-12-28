@@ -1,22 +1,21 @@
 body{
-    overflow-y: auto;
+    overflow-y: hidden;
 	display: flex;
     align-items: center;
+	background-image:url(../img/0.png);
+	background-size: 64px;
 }
 
 #tower{
 	width: 1054px;
     height: 750px;
-    border: 1px solid black;
     margin: 0 auto;
-	background:black;
 }
 
 .left{
 	float: left;
     width: 300px;
     height: 750px;
-    border: 1px solid black;
 	display: flex;
     justify-content: flex-end;
     align-items: center;
@@ -25,16 +24,65 @@ body{
 .propArea{
 	width:280px;
 	height:704px;
-	border: 1px solid black;
-	background:white;
+}
+.statusArea,.keysArea{
+    border: 6px solid #CC6600;
+	background-image:url(../img/4.jpg);
+	background-size:64px;
+	margin-bottom:6px;
+}
+.statusArea td,.keysArea td{
+	padding: 0 20px;
+}
+.statusArea table,.keysArea table,.settingArea table{
+	color: white;
+    font-size: 25px;
+    text-align: center;
+}
+.keysArea{
+	margin-bottom:0px;
+	border-bottom:3px solid #CC6600;;
 }
 
+.keysTd{
+	padding-left: 65px !important;
+}
+
+.floorArea{
+	border: 6px solid #CC6600;
+	background-image:url(../img/4.jpg);
+	background-size:64px;
+	text-align:center;
+	border-top:3px solid #CC6600;
+	color:white;
+	font-size: 25px;
+    padding: 8 0px;
+	margin-bottom:6px;
+}
+
+.settingArea{
+	border: 6px solid #CC6600;
+	background-image:url(../img/4.jpg);
+	background-size:64px;
+	margin-bottom:6px;
+}
+.settingArea table{
+	font-family:'华文行楷';
+	width: 100%;
+}
+.toolsArea{
+	border: 6px solid #CC6600;
+	background-image:url(../img/4.jpg);
+	background-size:64px;
+	height: 150px;
+	margin-bottom:6px;
+}
 .right{
 	float: right;
     position: relative;
     width: 750px;
     height: 100%;
-    border: 1px solid black;
+    
 	display: flex;
     justify-content: center;
     align-items: center;
@@ -43,12 +91,89 @@ body{
 .gameArea{
 	width:704px;
 	height:704px;
-	border:1px solid black;
+	border: 6px solid #CC6600;
 	background:white;
 }
 .gameDiv{
 	position:relative;
 }
+.shadeBox{
+	position: absolute;
+    width: 704px;
+    height: 704px;
+    background: black;
+    top: 0px;
+    z-index: 1000;
+	color:white;
+	text-align:center;
+}
+.shadeBox img{
+	position: relative;
+    top: 20%;
+    width: 40%;
+}
+.shadeBox span{
+	position: relative;
+    top: 30%;
+    font-size: 30px;
+    font-family: 华文行楷;
+}
+
+.handBook{
+	position: absolute;
+    width: 704px;
+    height: 704px;
+    background: black;
+    top: 0px;
+    z-index: 1000;
+	color:white;
+	text-align:center;
+}
+.handBook table{
+	color:white;
+	border-collapse: separate;
+    border-spacing: 0px 2px;
+	width:100%;
+	text-align:center;
+}
+.handBook div{
+	margin:0 auto;
+}
+.tipBox{
+	width: 90%;
+    height: 90px;
+    border: 4px solid #CC6600;
+    position: absolute;
+    top: 38%;
+    left: 5%;
+    background-image: url(../img/4.jpg);
+	background-size:64px;
+	text-align: center;
+    color: white;
+    font-size: 30px;
+    font-weight: bold;
+}
+
+.stipBox{
+	width: 90%;
+    height: 90px;
+    position: absolute;
+    top: 38%;
+    left: 5%;
+	text-align: center;
+}
+
+.tipText{
+	line-height: 90px;
+}
+.tipSpace{
+	float: right;
+    font-size: 20px;
+    line-height: normal;
+    bottom: 0px;
+    position: absolute;
+}
+
 .gameTable{
 	border-spacing: 0px;
 	position:relative;
@@ -61,6 +186,11 @@ body{
 	height:64px;
 	background-size:cover;
 }
+.ele40Td{
+	width:40px;
+	height:40px;
+	background-size:40px;
+}
 .hero{
 	position:absolute;
 }
@@ -70,7 +200,7 @@ body{
     height: 140px;
     background-image: url(../img/4.jpg);
     position: absolute;
-    border: 4px solid #794825;
+    border: 4px solid #CC6600;
     z-index: 100;
 }
 /*其余角色对话框*/
@@ -102,4 +232,64 @@ body{
     right: 10px;
 }
 
+/*攻击框*/
+.attackBox{
+    border: 6px solid #CC6600;
+    position: relative;
+    top: -550px;
+    left: -48%;
+    width: 150%;
+    margin: 0 auto;
+    height: 350px;
+    background-image: url(../img/4.jpg);
+    background-size: 64px;
+	
+}
+.attackBox table{
+	width: 97%;
+    margin: 35px auto;
+    color: white;
+    font-size: 25px;
+}
+
+.attackRole{
+	text-align: center;
+    width: 140px;
+    height: 140px;
+    border: 3px solid #CC6600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.whiteLineTd{
+	border-bottom:2px solid white;
+}
+.leftText{
+	text-align:left;
+}
+.rightText{
+	text-align:right;
+}
+.centerText{
+	text-align:center;
+}
+.italic{
+	font-style: italic;
+	font-weight:bold;
+}
+
+.fade-leave-active {
+  transition: opacity 1s;
+}
+.fade-leave-to {
+  opacity: 0;
+}
+
+.fadeq-leave-active {
+  transition: opacity 0.5s;
+}
+.fadeq-leave-to {
+  opacity: 0;
+}
 

@@ -6,19 +6,103 @@
 	<script src="../lib/jquery-1.10.2.min.js"></script>
 	<link rel="stylesheet" href="css/tower.css"></link>
 	<link rel="stylesheet" href="css/bg.css"></link>
+	<script src="js/initimg.js"></script>
 	<script src="js/maps.js"></script>
 
-	
-	<body ondragstart="return false" oncontextmenu="return false" onselectstart="return false" >
+	<body  ondragstart="return false" oncontextmenu="return false" onselectstart="return false" >
 		<div id="tower">
 			<div class="left">
 				<div  class="propArea">
-					第<input v-model="floor" />层<br/>
-					上<input v-model="hero.top"/><br/>
-					左<input v-model="hero.left"/><br/>
+					<div class="statusArea"> 
+						<table>
+							<tr>
+								<td style="width:20%"><div class="eleTd bg-hero-1"></div></td>
+								<td>{{hero.status.level}}级</td>
+							</tr>
+							<tr>
+								<td>生命</td>
+								<td>{{hero.status.life}}</td>
+							</tr>
+							<tr>
+								<td>攻击</td>
+								<td>{{hero.status.attack}}</td>
+							</tr>
+							<tr>
+								<td>防御</td>
+								<td>{{hero.status.defence}}</td>
+							</tr>
+							<tr>
+								<td>金币</td>
+								<td>{{hero.status.gold}}</td>
+							</tr>
+							<tr>
+								<td>经验</td>
+								<td>{{hero.status.exp}}</td>
+							</tr>
+						</table>
+					</div>
+					<div class="keysArea">
+						<table>
+							<tr>
+								<td style="width:20%"><div class="ele40Td bg-2001"></td>
+								<td class="keysTd">{{hero.tools.yellowKey}}个</td>
+							</tr>
+							<tr>
+								<td><div class="ele40Td bg-2002"></td>
+								<td class="keysTd">{{hero.tools.blueKey}}个</td>
+							</tr>
+							<tr>
+								<td><div class="ele40Td bg-2003"></td>
+								<td class="keysTd">{{hero.tools.redKey}}个</td>
+							</tr>
+							
+						</table>
+					</div>
+					<div class="floorArea">
+							{{floor==0?'序章':'第'+floor+'层'}}
+					</div>
 					
-					行<input v-model="hero.top/64"/><br/>
-					列<input v-model="hero.left/64"/><br/>
+					<div class="toolsArea">
+						<table>
+							<tr>
+								<td><div class="eleTd bg-2009" v-if="hero.tools.handBook.have"></div></td><!-- 图鉴 -->
+								<td><div class="eleTd ">
+									<input v-model="floor">
+									<input v-model="hero.status.attack"/>
+										<input v-model="hero.status.defence"/>
+										<input v-model="hero.tools.yellowKey"/>
+										<input v-model="hero.tools.blueKey"/>
+										<input v-model="hero.tools.redKey"/>
+								</div></td>
+								<td><div class="eleTd">
+										
+										
+								</div></td>
+								<td><div class="eleTd ">
+								
+								</div></td>
+							</tr>
+							<tr>
+								<td><div class="eleTd "></div></td>
+								<td><div class="eleTd "></div></td>
+								<td><div class="eleTd "></div></td>
+								<td><div class="eleTd "></div></td>
+							</tr>
+						</table>
+					</div>
+					<div class="settingArea">
+						<table>
+							<tr>
+								<td>S 保存</td>
+								<td>Q 退出程序</td>
+							</tr>
+							<tr>
+								<td>A 读取</td>
+								<td>R 重新开始</td>
+							</tr>
+						</table>
+					</div>
+			
 				</div>
 			</div>
 			<div class="right">
@@ -38,6 +122,52 @@
 							
 						</table>
 						
+						
+						<!-- 遮罩 -->
+						<transition  name="fade">
+							<div class="shadeBox"  v-if="shadeStatus">
+								<img src="img/4004.png">
+								<br/>
+								<span>
+								-- {{floor==0?'序章':'第'+floor+'层'}} --
+								</span>
+							</div>
+						</transition >
+						
+						<!-- 怪物图册 -->
+						<div class="handBook"  v-if="this.hero.tools.handBook.show">
+							<table>
+								<tr v-for="(monster,rindex) in hero.tools.handBook.monsters">
+									<td style="width:80px">
+										<div class="ele40Td" :class="`bg-${monster[6]}`"></div>
+									</td>
+									<td>
+										<table>
+											<tr>
+												<td style="width:10%">名称</td>
+												<td style="width:20%">{{monster[5]}}</td>
+												<td style="width:10%">攻击</td>
+												<td style="width:20%">{{monster[1]}}</td>
+												<td style="width:10%">金·经</td>
+												<td style="width:20%">{{monster[3]}}·{{monster[4]}}</td>
+											</tr>
+											<tr>
+												<td>生命</td>
+												<td>{{monster[0]}}</td>
+												<td>防御</td>
+												<td>{{monster[2]}}</td>
+												<td>损失</td>
+												<td>{{
+													checkCanAttack(monster[6])==-1?'???':checkCanAttack(monster[6])	
+												}}</td>
+											</tr>
+										</table>
+									</td>
+								</tr>
+							</table>
+						</div>
+						
+						
 						<!-- 英雄 -->
 						<div class="eleTd hero" 
 						@keydown.left="goLeft($event)" 
@@ -47,6 +177,73 @@
 						:class="`heroFaceTo-${hero.faceTo}`" 
 						:style="`top:${hero.top}px;left:${hero.left}px;`" >
 						</div>
+						
+						
+						<!-- 战斗框 -->
+						<div class="attackBox" v-if="hero.attackStatus.isAttck">
+							<table>
+								<tr>
+									<td rowspan="4" style="width:140px">
+										<div class="attackRole attackMonster">
+											<div class="eleTd" :class="`bg-${hero.attackStatus.monster.code}`"></div>
+										</div>
+									</td>
+									<td class="whiteLineTd">
+										生命值:
+									</td>
+									<td rowspan="6" class="centerText">
+										<img src="img/4002.png" width="128px"/>
+									</td>
+									<td class="whiteLineTd rightText">
+										:生命值
+									</td>
+									<td rowspan="4"  style="width:140px">
+										<div class="attackRole attackHero">
+											<div class="eleTd bg-hero-1"></div>
+										</div>
+									</td>
+								</tr>
+								<tr>
+									<td class="rightText italic">{{hero.attackStatus.monster.life}}</td>
+									<td class="leftText italic">{{hero.status.life}}</td>
+								</tr>
+								<tr>
+									<td class="whiteLineTd">攻击力：</td>
+									<td class="whiteLineTd rightText">：攻击力</td>
+								</tr>
+								<tr>
+									<td class="rightText italic">{{hero.attackStatus.monster.attack}}</td>
+									<td class="leftText italic">{{hero.status.attack}}</td>
+								</tr>
+								<tr>
+									<td rowspan="2" style="text-align:center">
+										<img src="img/4001.png" width="100px"/>
+									</td>
+									<td class="whiteLineTd">防御力：</td>
+									<td class="whiteLineTd rightText">：防御力</td>
+									<td rowspan="2" style="text-align:center">
+										<img src="img/4003.png" width="100px"/>
+									</td>
+								</tr>
+								<tr>
+									<td class="rightText italic">{{hero.attackStatus.monster.defence}}</td>
+									<td class="leftText italic">{{hero.status.defence}}</td>
+								</tr>
+							
+							</table>
+							
+						</div>
+						
+						<!-- 提示框 1秒后自动消失 -->
+						<transition  name="fadeq">
+							<div class="stipBox" v-if="tips.sStatus">
+								<img src="img/4005.png"/>
+							</div>
+							<div class="tipBox" v-if="tips.status">
+								<span class="tipText">{{tips.text}}</span>
+								<span class="tipSpace" v-if="!tips.autoDisappear"> -- Space --</span>
+							</div>
+						</transition >
 						
 						<!-- 文本对话框 -->
 						<div class="dialogBox" v-if="dialogBox.show!='none'" :class="`${dialogBox.show}DialogBox`">
