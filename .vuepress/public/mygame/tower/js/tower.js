@@ -19,12 +19,13 @@ var game = new Vue({
 	data:{//数据
 		heroSize:64,//单个方块所占像素
 		floor:0,//楼层
+		floorDown:false,//下楼标志
+		floorImage:4,//地板图片 以防不同楼层地板不一样
 		moveFlag:true,//是否可移动标志
 		taklingFlag:false,//对话模式标志
 		shadeStatus:false,//蒙版显示状态
-		tipStatus:false,//提示框状态
 		tipText:'',//提示文字
-		map:maps,
+		map:maps,//地图
 		hero:{
 			faceTo:1,//0上，1下，2左，3右
 			top:640,
@@ -34,7 +35,12 @@ var game = new Vue({
 				yellowKey:0,//黄钥匙
 				blueKey:0,//蓝钥匙
 				redKey:0,//红钥匙
-				handBook:false,//图鉴
+				handBook:{//图鉴
+					have:true,
+					show:false,
+					monsters:[
+					]
+				}
 			},
 			status:{//英雄状态
 				level:1,//等级
@@ -57,7 +63,7 @@ var game = new Vue({
 				}
 			}
 		},
-		dialogBox:{
+		dialogBox:{//文本对话框控制器
 			show:'none',//none:不显示,other:其他人对话，hero:英雄
 			role:'1001',//头像
 			roleName:'仙子：',//名称
@@ -66,16 +72,21 @@ var game = new Vue({
 			text:[],//文本内容
 			allText:[]
 		},
-		angel:{
+		angel:{//天使控制器
 			talkStatus:null
+		},
+		tips:{//提示框控制器
+			sStatus:false,//战斗胜利字样显示状态
+			status:false,//文本提示框显示状态
+			autoDisappear:true,//自动消失
+			text:''
 		}
 	},
 	methods:{//方法
 		//键盘按下事件
 		keyDown:function(code){
-			
 			//优先判定移动，其次判定对话
-			if(this.moveFlag){//移动标志
+			if(this.moveFlag){//移动标志 自由移动状态
 				if(37==code){//左
 					this.goLeft();
 				}else if(38==code){//上
@@ -84,13 +95,19 @@ var game = new Vue({
 					this.goRight();
 				}else if(40==code){//下
 					this.goDown();
+				}else if(76==code&&this.hero.tools.handBook.have){//拥有怪物图册并且按下L键
+					this.showHideHandBook();
 				}
-			}else if(this.taklingFlag){//对话标志
-				if(32==code){//空格
-					this.spacingTalking();
-
-				}
+				
+			}else if(this.taklingFlag&&32==code){//对话标志 按下空格
+				this.spacingTalking();
+				
+			}else if(this.tips.status&&32==code){//不自动消失的提示框 按下空格后提示框消失
+				this.tips.status = false;
+				this.tips.autoDisappear = true;
 			}
+			
+			
 		},
 		goUp:function(){//向上
 			this.hero.faceTo = 0;
@@ -114,7 +131,6 @@ var game = new Vue({
 		},
 		//移动英雄至某个位置方法
 		moveHero:function(top,left){
-			
 			var x = Math.round(top/this.heroSize);
 			var y = Math.round(left/this.heroSize);
 			//判断即将前进的位置是否可以前进
@@ -122,41 +138,25 @@ var game = new Vue({
 				return;
 			}
 			var touchType = this.map[this.floor][x][y];
-			if(touchType==5){//向上一层 获取上一层进入坐标
-			
-				top = mapInitPosition[this.floor+1].x1*this.heroSize;
-				left = mapInitPosition[this.floor+1].y1*this.heroSize;
-				this.hero.faceTo=1;
-				this.shadeStatus = true;
+			if(touchType==5){//向上一层
 				this.floor++;
-				window.setTimeout(function(){
-					game.shadeStatus = false;
-				},500);
-			}else if(touchType==6){//向下一层 获取下一层往上坐标
-			
-				top = mapInitPosition[this.floor-1].x2*this.heroSize;
-				left = mapInitPosition[this.floor-1].y2*this.heroSize;
-				this.hero.faceTo=1;
-				this.shadeStatus = true;
-				this.floor--;
-				window.setTimeout(function(){
-					game.shadeStatus = false;
-				},500);
-				
+				return;
+			}else if(touchType==6){//向下一层
+				this.floorDown = true;
+				this.floor--;	
+				return;
 			}else if(touchType==1001){//小天使
 				this.angelTalk(x,y);
 				return;
 			}else if(2001<=touchType&&touchType<=2999){//触碰道具
 				this.touchTools(x,y,touchType);
 				return;
-			}else if(3001<=touchType){//触碰怪物
+			}else if(3001<=touchType&&touchType<=3999){//触碰怪物
 				this.touchMonster(x,y,touchType);
 				return;
 			}
-			
 			this.hero.top = top;
 			this.hero.left = left;
-			
 		},
 		angelTalk:function(x,y){//小天使对话
 		
@@ -178,11 +178,8 @@ var game = new Vue({
 				this.overTalking = function(){//重写对话完成事件
 					this.taklingFlag = false;//结束对话
 				}
-
 				this.spacingTalking();//手动触发一次
-
 			}
-			
 		},
 		overTalking:function(){//对话结束触发事件，被各个触碰角色回写
 
@@ -258,7 +255,9 @@ var game = new Vue({
 
 		},
 		touchTools:function(x,y,type){//触碰道具,x,y,类型
-			var flag = true;
+			var flag = true;//吃掉道具标志
+			var showFlag = true;//显示提示标志
+			var disappear = true;//提示框自动消失
 			switch(type){
 				case 2001://黄钥匙
 					this.hero.tools.yellowKey++;
@@ -275,6 +274,7 @@ var game = new Vue({
 					}else{
 						flag = false;
 					}
+					showFlag = false;
 					break;
 				case 2005://蓝门
 					if(this.hero.tools.blueKey>0){
@@ -282,19 +282,43 @@ var game = new Vue({
 					}else{
 						flag = false;
 					}
+					showFlag = false;
 					break;
 				case 2006://红门
 					if(this.hero.tools.redKey>0){
-					  this.hero.tools.redKey--;
+						this.hero.tools.redKey--;
 					}else{
 						flag = false;
 					}
+					showFlag = false;
+					break;
+				case 2007://小血瓶 血量+200
+					this.hero.life+=200;
+					break;
+				case 2008://大血瓶 血量+500
+					this.hero.life+=500;
+					break;
+				case 2009://怪物图册
+					this.hero.tools.handBook.have=true;
+					disappear = false;
+					break;
+				case 2010://蓝宝石
+					this.hero.defence+=3;
+					break;
+				case 2011://红宝石
+					this.hero.attack+=3;
+					break;
+				case 2012://铁剑
+					this.hero.attack+=10;
 					break;
 				default:
 					flag = false;
 			}
-			if(flag){
-				this.map[this.floor][x][y] = 4;
+			if(flag){//触碰道具后,道具是否消失
+				this.map[this.floor][x][y] = this.floorImage;
+			}
+			if(showFlag){//触碰道具后是否显示提示
+				this.showTips(tipsData[type],false,disappear);
 			}
 		},
 		touchMonster:function(x,y,type){
@@ -320,11 +344,11 @@ var game = new Vue({
 			if(ha-md<=0){//英雄攻击小于怪物防御 无法攻击
 				return -1;
 			}
-			var time = Math.round(ml/(ha-md));//怪物血量/(英雄攻击-怪物防御) 取整得到需要攻击的次数
+			var time = Math.ceil(ml/(ha-md));//怪物血量/(英雄攻击-怪物防御) 取整得到需要攻击的次数
 			if((ma-hd)*time>=hl){//(怪物攻击-英雄防御)*攻击次数大于等于英雄剩余血量 无法攻击
 				return -1;
 			}
-			var lossLife = Math.round(ext+(ma-hd)*time);
+			var lossLife = ma-hd<=0?0:Math.ceil(ext+(ma-hd)*(time-1));
 			return lossLife;
 		},
 		attackStart:function(x,y,type){//攻击开始
@@ -336,26 +360,62 @@ var game = new Vue({
 			var mg = this.hero.attackStatus.monster.gold = monstersData[""+type+""][3];
 			var mexp = this.hero.attackStatus.monster.exp = monstersData[""+type+""][4];
 			var heroA = Math.round(this.hero.status.attack-md);//英雄单次攻击
+			
 			var monsterA  = Math.round(ma-this.hero.status.defence);//怪物单次攻击
 			this.hero.attackStatus.isAttck = true;//攻击开始
 			window.attInt = window.setInterval(function(){
 				if(game.hero.attackStatus.monster.life <= heroA){
 					game.hero.attackStatus.monster.life =0;				
-					game.hero.status.life -= monsterA;
+					//game.hero.status.life -= monsterA; 英雄先攻，最后一次攻击英雄不掉血
 					game.attackEnd(x,y,monstersData[""+type+""]);
 					window.clearInterval(window.attInt);
 				}else{
-					game.hero.attackStatus.monster.life -= heroA;				
-					game.hero.status.life -= monsterA;
+					game.hero.attackStatus.monster.life -= heroA;	
+					window.setTimeout(function(){
+						game.hero.status.life -= monsterA;
+					},100)
 				}
-			},500);
+			},300);//TODO 这里临时调整为每0.1秒判定一次   0.3秒判定一次比较合理
 			
 		},
-		attackEnd:function(x,y,monster){
-			this.hero.attackStatus.isAttck = false;
+		attackEnd:function(x,y,monster){//攻击结束
+			this.showTips("获得"+monster[3]+"金币,"+monster[4]+"经验",true);	
 			this.hero.status.gold += monster[3];
 			this.hero.status.exp += monster[4];
 			this.map[this.floor][x][y] = 4;
+		},
+		showTips:function(text,attackFlag,disappear){//提示框  文本，战斗胜利？不自动消失？
+			this.tips.text = text;
+			if(attackFlag){//战斗胜利显示战斗胜利后，会自动显示提示
+				this.tips.sStatus = true;
+				this.hero.attackStatus.isAttck = false;
+			}else{
+				this.tips.status = true;
+				this.tips.autoDisappear = disappear;
+			}
+		},
+		showHideHandBook:function(){//显示隐藏怪物图册
+			if(this.hero.tools.handBook.show){
+				this.hero.tools.handBook.show = false;
+				return;
+			}else{
+				var map = this.map[this.floor];
+				var monsters = [];
+				for(var i =0;i<map.length;i++){
+					for(var j = 0;j<map[i].length;j++){
+						if(map[i][j]>=3001&&map[i][j]<=3999){//怪物
+							monsters.pushNoRepeat(map[i][j]);
+						}
+					}
+				}
+				this.hero.tools.handBook.monsters = new Array();
+				for(var i = 0;i<monsters.length;i++){
+					this.hero.tools.handBook.monsters.push(monstersData[monsters[i]]);
+				}
+				
+			}
+			this.hero.tools.handBook.show = !this.hero.tools.handBook.show;
+			
 		}
 
 	},	
@@ -363,6 +423,9 @@ var game = new Vue({
 		
 	},
 	computed:{//计算
+		floorChange(){//楼层变化
+			return this.floor;
+		},
 		talkingFlagChange(){//对话框状态变化
 			return this.taklingFlag;
 		},
@@ -372,35 +435,69 @@ var game = new Vue({
 		shadeStatusChange(){//蒙版状态变化
 			return this.shadeStatus;
 		},
+		tipssStatusChange(){//战斗胜利提示框
+			return this.tips.sStatus;
+		},
 		tipStatusChange(){//提示状态变化
-			return this.tipStatus;
+			return this.tips.status;
 		}
 	},
 	watch:{//监听
-		talkingFlagChange:function(flag){
+		floorChange:function(floor){//楼层变化
+			game.shadeStatus = true;
+			if(game.floorDown){//下楼
+				top = mapInitPosition[floor].x2*game.heroSize;
+				left = mapInitPosition[floor].y2*game.heroSize;
+				game.floorDown = false;
+			}else{
+				var top = mapInitPosition[floor].x1*game.heroSize;
+				var left = mapInitPosition[floor].y1*game.heroSize;
+			}
+			game.hero.top = top;
+			game.hero.left = left;
+			game.hero.faceTo=1;
+			window.setTimeout(function(){
+				game.shadeStatus = false;
+			},100);
+		},
+		talkingFlagChange:function(flag){//对话框状态
 			if(flag){
 				game.moveFlag = false;
 			}else{
 				game.moveFlag = true;
 			}
 		},
-		attackFlagChange:function(flag){
+		attackFlagChange:function(flag){//攻击状态标志切换
 			if(flag){
 				game.moveFlag = false;
 			}else{
 				game.moveFlag = true;
 			}
 		},
-		shadeStatusChange:function(flag){
+		shadeStatusChange:function(flag){//切换楼层遮罩框
 			if(flag){
 				game.moveFlag = false;
 			}else{
 				game.moveFlag = true;
 			}
 		},
-		tipStatusChange:function(flag){
+		tipssStatusChange:function(flag){//战斗胜利提示框
 			if(flag){
 				game.moveFlag = false;
+				window.setTimeout(function(){
+					game.tips.sStatus = false;
+					game.tips.status = true;
+				},200);
+			}
+		},
+		tipStatusChange:function(flag){//自动消失提示框
+			if(flag){
+				game.moveFlag = false;
+				if(game.tips.autoDisappear){
+					window.setTimeout(function(){
+						game.tips.status = false;
+					},100);
+				}
 			}else{
 				game.moveFlag = true;
 			}

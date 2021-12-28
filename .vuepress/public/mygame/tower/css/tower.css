@@ -118,6 +118,27 @@ body{
     font-size: 30px;
     font-family: 华文行楷;
 }
+
+.handBook{
+	position: absolute;
+    width: 704px;
+    height: 704px;
+    background: black;
+    top: 0px;
+    z-index: 1000;
+	color:white;
+	text-align:center;
+}
+.handBook table{
+	color:white;
+	border-collapse: separate;
+    border-spacing: 0px 2px;
+	width:100%;
+	text-align:center;
+}
+.handBook div{
+	margin:0 auto;
+}
 .tipBox{
 	width: 90%;
     height: 90px;
@@ -133,8 +154,24 @@ body{
     font-weight: bold;
 }
 
-.tipBox span{
+.stipBox{
+	width: 90%;
+    height: 90px;
+    position: absolute;
+    top: 38%;
+    left: 5%;
+	text-align: center;
+}
+
+.tipText{
 	line-height: 90px;
+}
+.tipSpace{
+	float: right;
+    font-size: 20px;
+    line-height: normal;
+    bottom: 0px;
+    position: absolute;
 }
 
 .gameTable{
@@ -243,9 +280,16 @@ body{
 }
 
 .fade-leave-active {
-  transition: opacity 1.5s;
+  transition: opacity 1s;
 }
 .fade-leave-to {
+  opacity: 0;
+}
+
+.fadeq-leave-active {
+  transition: opacity 0.5s;
+}
+.fadeq-leave-to {
   opacity: 0;
 }
 

@@ -65,12 +65,22 @@
 					<div class="toolsArea">
 						<table>
 							<tr>
-								<td><div class="eleTd bg-2009" v-if="hero.tools.handBook"></div></td><!-- 图鉴 -->
+								<td><div class="eleTd bg-2009" v-if="hero.tools.handBook.have"></div></td><!-- 图鉴 -->
 								<td><div class="eleTd ">
-							
+									<input v-model="floor">
+									<input v-model="hero.status.attack"/>
+										<input v-model="hero.status.defence"/>
+										<input v-model="hero.tools.yellowKey"/>
+										<input v-model="hero.tools.blueKey"/>
+										<input v-model="hero.tools.redKey"/>
 								</div></td>
-								<td><div class="eleTd"></div></td>
-								<td><div class="eleTd "></div></td>
+								<td><div class="eleTd">
+										
+										
+								</div></td>
+								<td><div class="eleTd ">
+								
+								</div></td>
 							</tr>
 							<tr>
 								<td><div class="eleTd "></div></td>
@@ -116,13 +126,46 @@
 						<!-- 遮罩 -->
 						<transition  name="fade">
 							<div class="shadeBox"  v-if="shadeStatus">
-								<img src="img/shadeText.png">
+								<img src="img/4004.png">
 								<br/>
 								<span>
 								-- {{floor==0?'序章':'第'+floor+'层'}} --
 								</span>
 							</div>
 						</transition >
+						
+						<!-- 怪物图册 -->
+						<div class="handBook"  v-if="this.hero.tools.handBook.show">
+							<table>
+								<tr v-for="(monster,rindex) in hero.tools.handBook.monsters">
+									<td style="width:80px">
+										<div class="ele40Td" :class="`bg-${monster[6]}`"></div>
+									</td>
+									<td>
+										<table>
+											<tr>
+												<td style="width:10%">名称</td>
+												<td style="width:20%">{{monster[5]}}</td>
+												<td style="width:10%">攻击</td>
+												<td style="width:20%">{{monster[1]}}</td>
+												<td style="width:10%">金·经</td>
+												<td style="width:20%">{{monster[3]}}·{{monster[4]}}</td>
+											</tr>
+											<tr>
+												<td>生命</td>
+												<td>{{monster[0]}}</td>
+												<td>防御</td>
+												<td>{{monster[2]}}</td>
+												<td>损失</td>
+												<td>{{
+													checkCanAttack(monster[6])==-1?'???':checkCanAttack(monster[6])	
+												}}</td>
+											</tr>
+										</table>
+									</td>
+								</tr>
+							</table>
+						</div>
 						
 						
 						<!-- 英雄 -->
@@ -149,7 +192,7 @@
 										生命值:
 									</td>
 									<td rowspan="6" class="centerText">
-										<img src="img/vs.png" width="128px"/>
+										<img src="img/4002.png" width="128px"/>
 									</td>
 									<td class="whiteLineTd rightText">
 										:生命值
@@ -174,12 +217,12 @@
 								</tr>
 								<tr>
 									<td rowspan="2" style="text-align:center">
-										<img src="img/monster.png" width="100px"/>
+										<img src="img/4001.png" width="100px"/>
 									</td>
 									<td class="whiteLineTd">防御力：</td>
 									<td class="whiteLineTd rightText">：防御力</td>
 									<td rowspan="2" style="text-align:center">
-										<img src="img/hero.png" width="100px"/>
+										<img src="img/4003.png" width="100px"/>
 									</td>
 								</tr>
 								<tr>
@@ -189,13 +232,16 @@
 							
 							</table>
 							
-							
 						</div>
 						
 						<!-- 提示框 1秒后自动消失 -->
-						<transition  name="fade">
-							<div class="tipBox" v-if="tipStatus">
-								<span>{{tipText}}</span>
+						<transition  name="fadeq">
+							<div class="stipBox" v-if="tips.sStatus">
+								<img src="img/4005.png"/>
+							</div>
+							<div class="tipBox" v-if="tips.status">
+								<span class="tipText">{{tips.text}}</span>
+								<span class="tipSpace" v-if="!tips.autoDisappear"> -- Space --</span>
 							</div>
 						</transition >
 						

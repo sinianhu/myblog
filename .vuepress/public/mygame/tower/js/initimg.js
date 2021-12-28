@@ -12,7 +12,6 @@ window.onload = function() {
     imageLoad({
         url: function(v) {
             v = [];
-			
             for (var i = 1; i <= 6; i++) {
                 v[v.length] = 'img/' + i + '.jpg';
             }
@@ -25,6 +24,12 @@ window.onload = function() {
 			for (var i = 3001; i <= 3008; i++) {
                 v[v.length] = 'img/' + i + '.jpg';
             }
+			for (var i = 4001; i <= 4005; i++) {
+                v[v.length] = 'img/' + i + '.png';
+            }
+			for (var i = 0;i<= 3;i++){
+				v[v.length] = 'img/hero-' + i + '.jpg';
+			}
             return v;
         },
         oncomplete: function(s) {
