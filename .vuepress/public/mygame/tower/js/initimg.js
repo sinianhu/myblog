@@ -12,16 +12,16 @@ window.onload = function() {
     imageLoad({
         url: function(v) {
             v = [];
-            for (var i = 1; i <= 6; i++) {
+            for (var i = 0; i <= 8; i++) {
                 v[v.length] = 'img/' + i + '.jpg';
             }
-			for (var i = 1001; i <= 1001; i++) {
+			for (var i = 1001; i <= 1006; i++) {
                 v[v.length] = 'img/' + i + '.jpg';
             }
-			for (var i = 2001; i <= 2011; i++) {
+			for (var i = 2001; i <= 2012; i++) {
                 v[v.length] = 'img/' + i + '.jpg';
             }
-			for (var i = 3001; i <= 3008; i++) {
+			for (var i = 3001; i <= 3010; i++) {
                 v[v.length] = 'img/' + i + '.jpg';
             }
 			for (var i = 4001; i <= 4005; i++) {
