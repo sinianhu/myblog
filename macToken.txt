@@ -3,3 +3,7 @@ macToken:
 
 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
 
+
+windowsToken:
+
+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

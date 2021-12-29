@@ -12,7 +12,7 @@ window.onload = function() {
     imageLoad({
         url: function(v) {
             v = [];
-            for (var i = 0; i <= 8; i++) {
+            for (var i = 1; i <= 8; i++) {
                 v[v.length] = 'img/' + i + '.jpg';
             }
 			for (var i = 1001; i <= 1007; i++) {

@@ -293,23 +293,23 @@ var game = new Vue({
 					showFlag = false;
 					break;
 				case 2007://小血瓶 血量+200
-					this.hero.life+=200;
+					this.hero.status.life+=200;
 					break;
 				case 2008://大血瓶 血量+500
-					this.hero.life+=500;
+					this.hero.status.life+=500;
 					break;
 				case 2009://怪物图册
 					this.hero.tools.handBook.have=true;
 					disappear = false;
 					break;
 				case 2010://蓝宝石
-					this.hero.defence+=3;
+					this.hero.status.defence+=3;
 					break;
 				case 2011://红宝石
-					this.hero.attack+=3;
+					this.hero.status.attack+=3;
 					break;
 				case 2012://铁剑
-					this.hero.attack+=10;
+					this.hero.status.attack+=10;
 					break;
 				default:
 					flag = false;
