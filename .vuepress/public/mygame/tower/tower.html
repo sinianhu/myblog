@@ -234,16 +234,29 @@
 							
 						</div>
 						
+
+
 						<!-- 提示框 1秒后自动消失 -->
 						<transition  name="fadeq">
 							<div class="stipBox" v-if="tips.sStatus">
 								<img src="img/4005.png"/>
 							</div>
-							<div class="tipBox" v-if="tips.status">
-								<span class="tipText">{{tips.text}}</span>
-								<span class="tipSpace" v-if="!tips.autoDisappear"> -- Space --</span>
+							<div class="tipBox" v-if="tips.status" 
+								:class="{black:!tips.autoDisappear}">
+								<span class="tipText" v-if="tips.autoDisappear">{{tips.text}}</span>
+								<div v-if="!tips.autoDisappear">
+										<span class="toolName">{{tips.text.split('|')[0]}}</span>
+										<br>
+										<div class="toolText">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{tips.text.split('|')[1]}}</div>
+
+										<span class="tipSpace" v-if="!tips.autoDisappear"> -- Space --</span>
+								</div>
+								
 							</div>
 						</transition >
+
+
+
 						
 						<!-- 文本对话框 -->
 						<div class="dialogBox" v-if="dialogBox.show!='none'" :class="`${dialogBox.show}DialogBox`">

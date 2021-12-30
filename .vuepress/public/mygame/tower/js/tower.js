@@ -32,6 +32,7 @@ var game = new Vue({
 			left:320,
 			tools:{//英雄道具
 				cross:false,//十字架
+				compass:true,//星之罗盘
 				yellowKey:0,//黄钥匙
 				blueKey:0,//蓝钥匙
 				redKey:0,//红钥匙
@@ -40,6 +41,11 @@ var game = new Vue({
 					show:false,
 					monsters:[
 					]
+				},
+				compass:{//风之罗盘
+					have:true,
+					show:false,
+					maxFloor:0
 				}
 			},
 			status:{//英雄状态
@@ -79,7 +85,7 @@ var game = new Vue({
 			sStatus:false,//战斗胜利字样显示状态
 			status:false,//文本提示框显示状态
 			autoDisappear:true,//自动消失
-			text:''
+			text:'圣光徽|该宝物可以查看怪物的基本情况，使用时按下键盘上的【L】键便可进行查看，再次按【L】键则取消显示。'
 		}
 	},
 	methods:{//方法
@@ -97,17 +103,20 @@ var game = new Vue({
 					this.goDown();
 				}else if(76==code&&this.hero.tools.handBook.have){//拥有怪物图册并且按下L键
 					this.showHideHandBook();
+				}else if(74==code&&this.hero.tools.compass.have){//拥有风之罗盘，按下J键
+					this.showHideJump();//展示隐藏跳楼选择
 				}
-				
 			}else if(this.taklingFlag&&32==code){//对话标志 按下空格
 				this.spacingTalking();
 				
 			}else if(this.tips.status&&32==code){//不自动消失的提示框 按下空格后提示框消失
 				this.tips.status = false;
 				this.tips.autoDisappear = true;
+			}else if(76==code&&this.hero.tools.handBook.show){//拥有怪物图册并在显示
+				this.showHideHandBook();
+			}else if(4==code&&this.hero.tools.compass.show){//关闭风之罗盘
+				this.showHideJump();
 			}
-			
-			
 		},
 		goUp:function(){//向上
 			this.hero.faceTo = 0;
@@ -197,7 +206,6 @@ var game = new Vue({
 			}catch(e){
 				console.log('根据【'+floor+"】层，【"+role+"】角色，【"+talkStatus+"】状态抓取对话失败！");
 			}
-			
 		},
 		spacingTalking:function(){//按下空格继续对话
 			var allText = this.dialogBox.allText;
@@ -311,6 +319,30 @@ var game = new Vue({
 				case 2012://铁剑
 					this.hero.status.attack+=10;
 					break;
+				case 2013://钥匙串
+					this.hero.tools.yellowKey++;
+					this.hero.tools.blueKey++;
+					this.hero.tools.redKey++;
+					break;
+				case 2014://铁盾 防御加10
+					this.hero.stauts.defence+=10;
+					break;
+				case 2015://小飞羽 等级+1  血量+1000 攻击+10 防御+10
+					this.hero.status.level++;
+					this.hero.status.life+=10;
+					this.hero.status.attack+=10;
+					this.hero.status.defence+=10;
+					break;
+				case 2016://大金币 金币+300
+					this.hero.status.gold += 300;
+					break;
+				case 2017://十字架
+					this.hero.tools.cross = true;
+					disappear = false;
+					break;
+				case 2018://星之罗盘 飞楼器
+					this.hero.tools.compass.have = true;
+					disappear = false;
 				default:
 					flag = false;
 			}
@@ -415,7 +447,15 @@ var game = new Vue({
 				
 			}
 			this.hero.tools.handBook.show = !this.hero.tools.handBook.show;
-			
+		},
+		showHideJump:function(){//显示隐藏跳楼器
+			if(this.hero.tools.compass.show){
+				this.hero.tools.compass.show = false;
+				return;
+			}else{
+
+			}
+			this.hero.tools.compass.show = !this.hero.tools.compass.show;
 		}
 
 	},	
@@ -426,23 +466,28 @@ var game = new Vue({
 		floorChange(){//楼层变化
 			return this.floor;
 		},
-		talkingFlagChange(){//对话框状态变化
-			return this.taklingFlag;
-		},
-		attackFlagChange(){//攻击状态变化
-			return this.hero.attackStatus.isAttck;
-		},
-		shadeStatusChange(){//蒙版状态变化
-			return this.shadeStatus;
-		},
 		tipssStatusChange(){//战斗胜利提示框
 			return this.tips.sStatus;
 		},
 		tipStatusChange(){//提示状态变化
 			return this.tips.status;
-		}
+		},
+		stopMoveChange() {//开始对话，进入攻击，出现蒙版,查看怪物属性，跳楼    停止移动
+	      return this.taklingFlag
+	      		||this.hero.attackStatus.isAttck
+	      		||this.shadeStatus
+	      		||this.hero.tools.handBook.show
+	      		||this.hero.tools.compass.show;
+	    }
 	},
 	watch:{//监听
+		stopMoveChange:function(flag){
+			if(flag){
+				game.moveFlag = false;
+			}else{
+				game.moveFlag = true;
+			}
+		},
 		floorChange:function(floor){//楼层变化
 			game.shadeStatus = true;
 			if(game.floorDown){//下楼
@@ -452,34 +497,18 @@ var game = new Vue({
 			}else{
 				var top = mapInitPosition[floor].x1*game.heroSize;
 				var left = mapInitPosition[floor].y1*game.heroSize;
+				if(floor-1>game.hero.tools.compass.maxFloor){//上楼时判断下一层是否被记录走过的最大楼层
+					game.hero.tools.compass.maxFloor = floor-1;
+				}
 			}
 			game.hero.top = top;
 			game.hero.left = left;
 			game.hero.faceTo=1;
+
+			
 			window.setTimeout(function(){
 				game.shadeStatus = false;
 			},100);
-		},
-		talkingFlagChange:function(flag){//对话框状态
-			if(flag){
-				game.moveFlag = false;
-			}else{
-				game.moveFlag = true;
-			}
-		},
-		attackFlagChange:function(flag){//攻击状态标志切换
-			if(flag){
-				game.moveFlag = false;
-			}else{
-				game.moveFlag = true;
-			}
-		},
-		shadeStatusChange:function(flag){//切换楼层遮罩框
-			if(flag){
-				game.moveFlag = false;
-			}else{
-				game.moveFlag = true;
-			}
 		},
 		tipssStatusChange:function(flag){//战斗胜利提示框
 			if(flag){

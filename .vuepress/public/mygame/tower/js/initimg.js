@@ -17,11 +17,11 @@ window.onload = function() {
             }
 			for (var i = 1001; i <= 1007; i++) {
                 v[v.length] = 'img/' + i + '.jpg';
-            }
-			for (var i = 2001; i <= 2016; i++) {
+            }1
+            for (var i = 2001; i <= 2023; i++) {
                 v[v.length] = 'img/' + i + '.jpg';
             }
-			for (var i = 3001; i <= 3018; i++) {
+			for (var i = 3001; i <= 3029; i++) {
                 v[v.length] = 'img/' + i + '.jpg';
             }
 			for (var i = 4001; i <= 4005; i++) {

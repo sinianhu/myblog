@@ -141,7 +141,7 @@ body{
 }
 .tipBox{
 	width: 90%;
-    height: 90px;
+    min-height: 90px;
     border: 4px solid #CC6600;
     position: absolute;
     top: 38%;
@@ -153,7 +153,15 @@ body{
     font-size: 30px;
     font-weight: bold;
 }
-
+.toolName{
+	font-family: auto;
+    font-size: 25px;
+}
+.toolText{
+	text-align: left;
+    font-size: 18px;
+    margin:4px;
+}
 .stipBox{
 	width: 90%;
     height: 90px;
@@ -162,15 +170,18 @@ body{
     left: 5%;
 	text-align: center;
 }
-
+.black{
+	background: black !important;
+}
 .tipText{
 	line-height: 90px;
 }
 .tipSpace{
 	float: right;
-    font-size: 20px;
+    font-size: 15px;
     line-height: normal;
     bottom: 0px;
+    right:5px;
     position: absolute;
 }
 
