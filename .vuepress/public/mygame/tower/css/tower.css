@@ -154,8 +154,9 @@ body{
     font-weight: bold;
 }
 .toolName{
-	font-family: auto;
+	font-family: 华文行楷;
     font-size: 25px;
+	
 }
 .toolText{
 	text-align: left;
@@ -302,5 +303,46 @@ body{
 }
 .fadeq-leave-to {
   opacity: 0;
+}
+.compass,.shop{
+	position: absolute;
+    top: 20%;
+    left: 50%;
+    margin-left: -200px;
+}
+.compassDescript,.compassSelect,.shopSelect{
+	padding: 20px;
+    background: black;
+    border: 4px solid #cc6600;
+}
+.compassDescript span,.shop span{
+	color: white;
+    bottom: 10px;
+}
+.compassSelect table,.shopSelect table{
+	color:white;
+	width: 400px;
+	color: white;
+    text-align: center;
+    font-size: 24px;
+    line-height: 50px;
+}
+.compassSelect caption{
+	font-family: 华文行楷;
+    font-size: 50px;
+}
+
+.compassSelect td,.shopSelect td{
+	border:2px solid black;
+}
+
+.selectFloor{animation: glow 800ms ease-out infinite alternate; }
+@keyframes glow {
+    0% {
+		border:2px solid white;
+    }
+    100% {
+        border:2px solid black;
+    }
 }
 

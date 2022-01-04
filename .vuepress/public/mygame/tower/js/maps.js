@@ -306,7 +306,7 @@ var mapInitPosition= [
 	y2:5
 },{//十五层
 	x1:0,
-	y1:4,
+	y1:3,
 	x2:0,
 	y2:7
 },{//十六层
@@ -526,5 +526,276 @@ var towerTalking = {
 		}
 }
 
+//商店设置
+var shopSetting= {
+	gold3:{//3层金币商店
+		text:{
+			caption:'想要增加你的能力吗？如果你有 25 个金币，你可以任意选择一项：',
+			item1:'增加 800 点生命',
+			item2:'增加 4 点攻击',
+			item3:'增加 4 点防御',
+			leave:'离开商店'
+		},
+		control:{
+			item1:{
+				condition:'gold',
+				cnumber:25,
+				result:[
+					{
+						item:'life',
+						rnumber:800
+					}
+				]
+				
+			},
+			item2:{
+				condition:'gold',
+				cnumber:25,
+				result:[
+					{
+						item:'attack',
+						rnumber:4
+					}
+				]
+			},
+			item3:{
+				condition:'gold',
+				cnumber:25,
+				result:[
+					{
+						item:'defence',
+						rnumber:4
+					}
+				]
+			}
+		}
+	},
+	gold11:{//11层金币商店
+		text:{
+			caption:'想要增加你的能力吗？如果你有 100 个金币，你可以任意选择一项：',
+			item1:'增加 4000 点生命',
+			item2:'增加 20 点攻击',
+			item3:'增加 20 点防御',
+			leave:'离开商店'
+		},
+		control:{
+			item1:{
+				condition:'gold',
+				cnumber:100,
+				result:[
+					{
+						item:'life',
+						rnumber:4000
+					}
+				]
+				
+			},
+			item2:{
+				condition:'gold',
+				cnumber:100,
+				result:[
+					{
+						item:'attack',
+						rnumber:20
+					}
+				]
+			},
+			item3:{
+				condition:'gold',
+				cnumber:100,
+				result:[
+					{
+						item:'defence',
+						rnumber:20
+					}
+				]
+			}
+		}
+	},
+	exp5:{//5层经验商店
+		text:{
+			caption:'你好，英雄的人类，只要你有足够的经验，我就可以让你变的更强大：',
+			item1:'提升一级（需要 100 点）',
+			item2:'增加攻击（需要 30 点）',
+			item3:'增加防御（需要 30 点）',
+			leave:'离开商店'
+		},
+		control:{
+			item1:{//提升一级：+7攻击+7防御+1000HP
+				condition:'exp',
+				cnumber:100,
+				result:[
+					{
+						item:'level',
+						rnumber:1
+					},{
+						item:'attack',
+						rnumber:7
+					},{
+						item:'defence',
+						rnumber:7
+					},{
+						item:'life',
+						rnumber:1000
+					}
+				]
+			},
+			item2:{
+				condition:'exp',
+				cnumber:30,
+				result:[
+					{
+						item:'attack',
+						rnumber:5
+					}
+				]
+			},
+			item3:{
+				condition:'exp',
+				cnumber:30,
+				result:[
+					{
+						item:'defence',
+						rnumber:5
+					}
+				]
+			}
+		}
+	},
+	exp13:{//13层经验商店
+		text:{
+			caption:'你好，英雄的人类，只要你有足够的经验，我就可以让你变的更强大：',
+			item1:'提升三级（需要 270 点）',
+			item2:'增加攻击 17 （需要 95 点）',
+			item3:'增加防御 17 （需要 95 点）',
+			leave:'离开商店'
+		},
+		control:{
+			item1:{//提升三级：+21攻击+21防御+3000HP
+				condition:'exp',
+				cnumber:270,
+				result:[
+					{
+						item:'level',
+						rnumber:3
+					},{
+						item:'attack',
+						rnumber:21
+					},{
+						item:'defence',
+						rnumber:21
+					},{
+						item:'life',
+						rnumber:3000
+					}
+				]
+			},
+			item2:{
+				condition:'exp',
+				cnumber:95,
+				result:[
+					{
+						item:'attack',
+						rnumber:17
+					}
+				]
+			},
+			item3:{
+				condition:'exp',
+				cnumber:95,
+				result:[
+					{
+						item:'defence',
+						rnumber:17
+					}
+				]
+			}
+		}
+	},
+	keys5:{//5层钥匙商店
+		text:{
+			caption:'相信你一定有特殊的需要，只要你有金币，我就可以帮你：',
+			item1:'购买 1 把 黄钥匙（$ 10）',
+			item2:'购买 1 把 蓝钥匙（$ 50）',
+			item3:'购买 1 把 红钥匙（$ 100）',
+			leave:'离开商店'
+		},
+		control:{
+			item1:{
+				condition:'gold',
+				cnumber:10,
+				result:[
+					{
+						item:'yellowKey',
+						rnumber:1
+					}
+				]
+			},
+			item2:{
+				condition:'gold',
+				cnumber:50,
+				result:[
+					{
+						item:'blueKey',
+						rnumber:1
+					}
+				]
+			},
+			item3:{
+				condition:'gold',
+				cnumber:100,
+				result:[
+					{
+						item:'redKey',
+						rnumber:1
+					}
+				]
+			}
+		}
+		
+	},keys12:{//12层钥匙商店卖出钥匙
+		text:{
+			caption:'哦，欢迎你的到来，如果你手里缺少金币，我可以帮你：',
+			item1:'卖出 1 把 黄钥匙（$ 7）',
+			item2:'卖出 1 把 蓝钥匙（$ 35）',
+			item3:'卖出 1 把 红钥匙（$ 70）',
+			leave:'离开商店'
+		},
+		control:{
+			item1:{
+				condition:'yellowKey',
+				cnumber:1,
+				result:[
+					{
+						item:'gold',
+						rnumber:7
+					}
+				]
+			},
+			item2:{
+				condition:'blueKey',
+				cnumber:1,
+				result:[
+					{
+						item:'gold',
+						rnumber:35
+					}
+				]
+			},
+			item3:{
+				condition:'redKey',
+				cnumber:1,
+				result:[
+					{
+						item:'gold',
+						rnumber:70
+					}
+				]
+			}
+		}
+		
+	}
+	
+}
 
 

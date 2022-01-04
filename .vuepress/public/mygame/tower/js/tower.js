@@ -32,10 +32,6 @@ var game = new Vue({
 			left:320,
 			tools:{//英雄道具
 				cross:false,//十字架
-				compass:true,//星之罗盘
-				yellowKey:0,//黄钥匙
-				blueKey:0,//蓝钥匙
-				redKey:0,//红钥匙
 				handBook:{//图鉴
 					have:false,
 					show:false,
@@ -43,8 +39,10 @@ var game = new Vue({
 					]
 				},
 				compass:{//风之罗盘
-					have:true,
+					have:false,
+					status:0, //0 说明状态 1跳跃状态
 					show:false,
+					selectFloor:1,
 					maxFloor:0
 				}
 			},
@@ -55,6 +53,9 @@ var game = new Vue({
 				defence:10,//防御
 				exp:0,//经验
 				gold:0,//金币
+				yellowKey:0,//黄钥匙  将钥匙数量放入status方便钥匙商店与金币经验商店集中
+				blueKey:0,//蓝钥匙
+				redKey:0,//红钥匙
 			},
 			attackStatus:{//攻击状态
 				isAttck:false,//是否处于攻击状态
@@ -86,11 +87,27 @@ var game = new Vue({
 			status:false,//文本提示框显示状态
 			autoDisappear:true,//自动消失
 			text:'圣光徽|该宝物可以查看怪物的基本情况，使用时按下键盘上的【L】键便可进行查看，再次按【L】键则取消显示。'
+		},
+		shop:{//商店控制器
+			show:false,//是否显示商店
+			status:0,//0 说明 1选择
+			selectItem:1, //1 第一项 2 第二项 3 第三项 4 离开  根据不同商店1,2,3不同
+			text:{
+				caption:'想要增加你的能力吗？如果你有 25 个金币，你可以任意选择一项：',
+				item1:'增加 800 点生命',
+				item2:'增加 4 点攻击',
+				item3:'增加 4 点防御',
+				leave:'离开商店'
+			},
+			control:{
+				
+			}
 		}
 	},
 	methods:{//方法
 		//键盘按下事件
 		keyDown:function(code){
+			console.log(code);
 			//优先判定移动，其次判定对话
 			if(this.moveFlag){//移动标志 自由移动状态
 				if(37==code){//左
@@ -114,9 +131,59 @@ var game = new Vue({
 				this.tips.autoDisappear = true;
 			}else if(76==code&&this.hero.tools.handBook.show){//拥有怪物图册并在显示
 				this.showHideHandBook();
-			}else if(4==code&&this.hero.tools.compass.show){//关闭风之罗盘
+			}else if(74==code&&this.hero.tools.compass.show){//关闭风之罗盘
 				this.showHideJump();
+			}else if(32==code&&this.hero.tools.compass.show&&this.hero.tools.compass.status==0){
+				//风之罗盘说明状态按下空格
+				this.hero.tools.compass.status = 1;
+			}else if(
+				this.hero.tools.compass.show
+				&&this.hero.tools.compass.status==1
+				&&(
+					code==38||
+					code==40||
+					code==104||
+					code==98
+				)
+			){//风之罗盘按上(38)、下(40)、小键盘8(104),2(98)监听
+				if(code==38||code==104){
+					this.changeFloor(-1,false);
+				}else{
+					this.changeFloor(1,false);
+				}
+			}else if(this.hero.tools.compass.show
+					&&this.hero.tools.compass.status==1
+					&&(32==code||101==code)
+					){
+				//风之罗盘确认楼层 空格(32)或者5(101)
+				this.changeFloor(1,true);
+			}else if(32==code&&this.shop.show&&this.shop.status==0){
+				//商店说明状态按下空格
+				this.shop.status = 1;
+			}else if(
+				this.shop.show
+				&&this.shop.status==1
+				&&(
+					code==38||
+					code==40||
+					code==104||
+					code==98
+				)
+			){//商店按上(38)、下(40)、小键盘8(104),2(98)监听
+				if(code==38||code==104){
+					this.changShopItem(-1,false);
+				}else{
+					this.changShopItem(1,false);
+				}
+			}else if(this.shop.show
+					&&this.shop.status==1
+					&&(32==code||101==code)
+					){
+				//商店确认 空格(32)或者5(101)
+				this.changShopItem(1,true);
 			}
+				
+			
 		},
 		goUp:function(){//向上
 			this.hero.faceTo = 0;
@@ -157,6 +224,9 @@ var game = new Vue({
 			}else if(touchType==1001){//小天使
 				this.angelTalk(x,y);
 				return;
+			}else if(1002<=touchType&&touchType<=1006){//各种道具商店
+				this.showShop(this.floor,touchType);
+				return;
 			}else if(2001<=touchType&&touchType<=2999){//触碰道具
 				this.touchTools(x,y,touchType);
 				return;
@@ -176,9 +246,9 @@ var game = new Vue({
 					this.taklingFlag = false;//结束对话
 					this.map[0][8][4] = 1001;//移动小精灵位置
 					this.map[0][8][5] = 4;
-					this.hero.tools.yellowKey++;
-					this.hero.tools.blueKey++;
-					this.hero.tools.redKey++;
+					this.hero.status.yellowKey++;
+					this.hero.status.blueKey++;
+					this.hero.status.redKey++;
 				}
 				this.spacingTalking();//手动触发一次
 			}else if(this.floor==0&&this.angel.talkStatus=='startOver'&&!this.hero.tools.cross){
@@ -268,33 +338,33 @@ var game = new Vue({
 			var disappear = true;//提示框自动消失
 			switch(type){
 				case 2001://黄钥匙
-					this.hero.tools.yellowKey++;
+					this.hero.status.yellowKey++;
 					break;
 				case 2002://蓝钥匙
-					this.hero.tools.blueKey++;
+					this.hero.status.blueKey++;
 					break;
 				case 2003://红钥匙
-					this.hero.tools.redKey++;
+					this.hero.status.redKey++;
 					break;
 				case 2004://黄门
-					if(this.hero.tools.yellowKey>0){
-					  this.hero.tools.yellowKey--;
+					if(this.hero.status.yellowKey>0){
+					  this.hero.status.yellowKey--;
 					}else{
 						flag = false;
 					}
 					showFlag = false;
 					break;
 				case 2005://蓝门
-					if(this.hero.tools.blueKey>0){
-					  this.hero.tools.blueKey--;
+					if(this.hero.status.blueKey>0){
+					  this.hero.status.blueKey--;
 					}else{
 						flag = false;
 					}
 					showFlag = false;
 					break;
 				case 2006://红门
-					if(this.hero.tools.redKey>0){
-						this.hero.tools.redKey--;
+					if(this.hero.status.redKey>0){
+						this.hero.status.redKey--;
 					}else{
 						flag = false;
 					}
@@ -320,12 +390,12 @@ var game = new Vue({
 					this.hero.status.attack+=10;
 					break;
 				case 2013://钥匙串
-					this.hero.tools.yellowKey++;
-					this.hero.tools.blueKey++;
-					this.hero.tools.redKey++;
+					this.hero.status.yellowKey++;
+					this.hero.status.blueKey++;
+					this.hero.status.redKey++;
 					break;
 				case 2014://铁盾 防御加10
-					this.hero.stauts.defence+=10;
+					this.hero.status.defence+=10;
 					break;
 				case 2015://小飞羽 等级+1  血量+1000 攻击+10 防御+10
 					this.hero.status.level++;
@@ -343,6 +413,7 @@ var game = new Vue({
 				case 2018://星之罗盘 飞楼器
 					this.hero.tools.compass.have = true;
 					disappear = false;
+					break;
 				default:
 					flag = false;
 			}
@@ -407,7 +478,7 @@ var game = new Vue({
 						game.hero.status.life -= monsterA;
 					},100)
 				}
-			},300);//TODO 这里临时调整为每0.1秒判定一次   0.3秒判定一次比较合理
+			},200);
 			
 		},
 		attackEnd:function(x,y,monster){//攻击结束
@@ -449,14 +520,100 @@ var game = new Vue({
 			this.hero.tools.handBook.show = !this.hero.tools.handBook.show;
 		},
 		showHideJump:function(){//显示隐藏跳楼器
+			//判断此时任务是否在楼梯旁边
+			var x = Math.round(this.hero.top/this.heroSize);
+			var y = Math.round(this.hero.left/this.heroSize);
+			var flag = false;//附近有楼梯标志
+			var floor = this.floor;
+			if(
+			(x>0&&(this.map[floor][x-1][y]==5||this.map[floor][x-1][y]==6))
+			||(x<10&&(this.map[floor][x+1][y]==5||this.map[floor][x+1][y]==6))
+			||(y>0&&(this.map[floor][x][y-1]==5||this.map[floor][x][y-1]==6))
+			||(y<10&&(this.map[floor][x][y+1]==5||this.map[floor][x][y+1]==6))
+			){
+				flag = true;
+			}else{
+				alert('只有站在楼梯口才能使用风之罗盘');
+				return false;
+			}		
 			if(this.hero.tools.compass.show){
 				this.hero.tools.compass.show = false;
+				this.hero.tools.compass.status  = 0;
+				this.hero.tools.compass.selectFloor = 1;
 				return;
-			}else{
-
 			}
 			this.hero.tools.compass.show = !this.hero.tools.compass.show;
-		}
+		},
+		changeFloor:function(upordown,flag){//进行楼层跳跃 up 1 down -1  flag确认楼层
+			if(!flag){//上/下
+				var selectFloor = this.hero.tools.compass.selectFloor;
+				if(selectFloor+upordown>=1&&selectFloor+upordown<=this.hero.tools.compass.maxFloor){
+					this.hero.tools.compass.selectFloor = selectFloor+upordown;
+				}
+			}else{
+				this.floor =  this.hero.tools.compass.selectFloor;
+				this.hero.tools.compass.show = false;
+				this.hero.tools.compass.status  = 0;
+				this.hero.tools.compass.selectFloor = 1;
+			}
+		},
+		showShop:function(floor,type){//显示商店
+			var shop = {};
+			if(type>=1004&&type<=1006){
+				if(floor==3){
+					shop = shopSetting.gold3;
+				}else if(floor==11){
+					shop = shopSetting.gold11;
+				}
+			}else if(type==1002){//蓝色老头
+				if(floor==5){
+					shop = shopSetting.exp5;
+					this.shop.status = 1;
+				}else if(floor==13){
+					shop = shopSetting.exp13;
+					this.shop.status = 1;
+				}
+				
+			}else if(type==1003){//红色老头
+				if(floor==5){
+					shop = shopSetting.keys5;
+					this.shop.status = 1;
+				}else if(floor==12){
+					shop = shopSetting.keys12;
+					this.shop.status = 1;
+				}
+			}
+			
+			//赋值文本
+			this.shop.text = shop.text;
+			this.shop.control = shop.control;
+			this.shop.show = true;
+		},
+		changShopItem:function(upordown,flag){//进行商店选择  upordown 1往下走，-1往上走，flag 确定？
+			if(!flag){//上/下
+				var selectItem = this.shop.selectItem;
+				if(selectItem+upordown>=1&&selectItem+upordown<=4){
+					this.shop.selectItem = selectItem+upordown;
+				}
+			}else{//确定
+				if(this.shop.selectItem==4){//关闭
+					this.shop.show = false;
+					this.shop.status  = 0;
+					this.shop.selectItem = 1;
+				}else{//
+					var control = this.shop.control['item'+this.shop.selectItem];
+					if(this.hero.status[control['condition']]<control['cnumber']){
+						alert('货币不足');
+					}else{
+						this.hero.status[control['condition']] -=control['cnumber'];
+						for(var i = 0;i<control.result.length;i++){
+							this.hero.status[control.result[i]['item']] += control.result[i]['rnumber'];
+						}
+					}
+				}
+				
+			}
+		},
 
 	},	
 	components: {//自定义组件
@@ -472,12 +629,13 @@ var game = new Vue({
 		tipStatusChange(){//提示状态变化
 			return this.tips.status;
 		},
-		stopMoveChange() {//开始对话，进入攻击，出现蒙版,查看怪物属性，跳楼    停止移动
+		stopMoveChange() {//开始对话，进入攻击，出现蒙版,查看怪物属性，跳楼，打开商店    停止移动
 	      return this.taklingFlag
 	      		||this.hero.attackStatus.isAttck
 	      		||this.shadeStatus
 	      		||this.hero.tools.handBook.show
-	      		||this.hero.tools.compass.show;
+	      		||this.hero.tools.compass.show
+				||this.shop.show;
 	    }
 	},
 	watch:{//监听
@@ -505,7 +663,6 @@ var game = new Vue({
 			game.hero.left = left;
 			game.hero.faceTo=1;
 
-			
 			window.setTimeout(function(){
 				game.shadeStatus = false;
 			},100);
