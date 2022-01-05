@@ -19,12 +19,12 @@ var game = new Vue({
 	data:{//数据
 		heroSize:64,//单个方块所占像素
 		floor:0,//楼层
+		loadGame:false,
 		floorDown:false,//下楼标志
 		floorImage:4,//地板图片 以防不同楼层地板不一样
 		moveFlag:true,//是否可移动标志
 		taklingFlag:false,//对话模式标志
 		shadeStatus:false,//蒙版显示状态
-		tipText:'',//提示文字
 		map:maps,//地图
 		hero:{
 			faceTo:1,//0上，1下，2左，3右
@@ -32,6 +32,8 @@ var game = new Vue({
 			left:320,
 			tools:{//英雄道具
 				cross:false,//十字架
+				hammer:false,//星光神榔
+				magicBar:false,//16层的法杖
 				handBook:{//图鉴
 					have:false,
 					show:false,
@@ -79,14 +81,15 @@ var game = new Vue({
 			text:[],//文本内容
 			allText:[]
 		},
-		angel:{//天使控制器
-			talkStatus:null
+		npc:{//npc状态记录
+			anger:null,//null/start/startOver
+			thief:null,//null/wait
 		},
 		tips:{//提示框控制器
 			sStatus:false,//战斗胜利字样显示状态
 			status:false,//文本提示框显示状态
 			autoDisappear:true,//自动消失
-			text:'圣光徽|该宝物可以查看怪物的基本情况，使用时按下键盘上的【L】键便可进行查看，再次按【L】键则取消显示。'
+			text:''
 		},
 		shop:{//商店控制器
 			show:false,//是否显示商店
@@ -122,6 +125,12 @@ var game = new Vue({
 					this.showHideHandBook();
 				}else if(74==code&&this.hero.tools.compass.have){//拥有风之罗盘，按下J键
 					this.showHideJump();//展示隐藏跳楼选择
+				}else if(82==code){//按下R，重新开始
+					this.reStartGame();
+				}else if(83==code){//S ,保存
+					this.saveGame();
+				}else if(65==code){//a ,读取
+					this.readGame();
 				}
 			}else if(this.taklingFlag&&32==code){//对话标志 按下空格
 				this.spacingTalking();
@@ -185,6 +194,33 @@ var game = new Vue({
 				
 			
 		},
+		saveGame(){//保存
+			localStorage.setItem('towerData',JSON.stringify(this._data));
+			this.showTips('保存游戏成功！',false,true);
+		},
+		readGame(){//载入
+			if(localStorage.getItem('towerData')==null
+			||localStorage.getItem('towerData')=='undefined'
+			||typeof(localStorage.getItem('towerData'))=='undefined'
+			){
+				alert('暂无存档！');
+			}
+			this.loadGame = true;//标志为加载游戏，防止楼层切换引起的英雄位置初始化
+			var data = JSON.parse(localStorage.getItem('towerData'));
+			this.floor = data.floor;
+			this.map = data.map;
+			this.hero = data.hero;
+			this.npc = data.npc;
+			
+			window.setTimeout(function(){
+				game.showTips('载入游戏成功！',false,true);
+				game.loadGame = false;
+			},500);
+			
+		},
+		reStartGame(){//重新开始
+			window.location.reload();
+		},
 		goUp:function(){//向上
 			this.hero.faceTo = 0;
 			var top = this.hero.top-this.heroSize<0?this.hero.top:this.hero.top-this.heroSize;
@@ -205,8 +241,7 @@ var game = new Vue({
 			var left  = this.hero.left+this.heroSize>640?this.hero.left:this.hero.left+this.heroSize;
 			this.moveHero(this.hero.top,left);
 		},
-		//移动英雄至某个位置方法
-		moveHero:function(top,left){
+		moveHero:function(top,left){//移动英雄至某个位置方法
 			var x = Math.round(top/this.heroSize);
 			var y = Math.round(left/this.heroSize);
 			//判断即将前进的位置是否可以前进
@@ -221,11 +256,17 @@ var game = new Vue({
 				this.floorDown = true;
 				this.floor--;	
 				return;
-			}else if(touchType==1001){//小天使
-				this.angelTalk(x,y);
+			}else if(touchType==7){//铁栅栏
+				this.fence(x,y);
+				return;
+			}else if(touchType==1001){//仙子
+				this.npcTalk(x,y,touchType);
 				return;
 			}else if(1002<=touchType&&touchType<=1006){//各种道具商店
 				this.showShop(this.floor,touchType);
+				return;
+			}else if(1007<=touchType&&touchType<=1010){//npc
+				this.npcTalk(x,y,touchType);
 				return;
 			}else if(2001<=touchType&&touchType<=2999){//触碰道具
 				this.touchTools(x,y,touchType);
@@ -233,32 +274,168 @@ var game = new Vue({
 			}else if(3001<=touchType&&touchType<=3999){//触碰怪物
 				this.touchMonster(x,y,touchType);
 				return;
+			}else if(touchType==4){
+				
+			}else{
+				return;
 			}
 			this.hero.top = top;
 			this.hero.left = left;
 		},
-		angelTalk:function(x,y){//小天使对话
-		
-			if(this.floor==0&&this.angel.talkStatus==null){//第一次与天使对话
-				this.getTalkingText('angel','start');
-				this.overTalking = function(){//重写对话完成事件
-					this.angel.talkStatus = 'startOver';//对完话
-					this.taklingFlag = false;//结束对话
-					this.map[0][8][4] = 1001;//移动小精灵位置
-					this.map[0][8][5] = 4;
-					this.hero.status.yellowKey++;
-					this.hero.status.blueKey++;
-					this.hero.status.redKey++;
+		npcTalk:function(x,y,type){
+			if(type==1001){//仙子
+				if(this.floor==0&&this.npc.angel==null){//第一次与天使对话
+					this.getTalkingText('angel','start');
+					this.overTalking = function(){//重写对话完成事件
+						this.npc.angel = 'startOver';//对完话
+						this.taklingFlag = false;//结束对话
+						this.map[0][8][4] = 1001;//移动小精灵位置
+						this.map[0][8][5] = 4;
+						this.hero.status.yellowKey++;
+						this.hero.status.blueKey++;
+						this.hero.status.redKey++;
+					}
+				}else if(this.floor==0&&this.npc.angel=='startOver'&&!this.hero.tools.cross&&!this.hero.tools.magicBar){
+					//0层，小天使，待机状态，没有十字架
+					this.getTalkingText('angel','comeon');
+					this.overTalking = function(){//重写对话完成事件
+						this.taklingFlag = false;//结束对话
+					}
+				}else if(this.floor==0&&this.npc.angel=='startOver'&&!this.hero.tools.cross&&this.hero.tools.magicBar){
+					//0层 仙子 待机状态 无十字架 有法杖
+					this.getTalkingText('angel','magicBar');
+					this.npc.angel = 'magicBar';//对完话
+					this.overTalking = function(){//重写对话完成事件
+						this.taklingFlag = false;//结束对话
+					}
+				}else if(this.floor==0&&(this.npc.angel=='startOver'||this.npc.angel=='magicBar')&&this.hero.tools.cross){
+					//0层 仙子 待机状态/法杖状态 十字架 三维各增加1/3
+					this.getTalkingText('angel','cross');
+					this.npc.angel = "cross";
+					this.overTalking = function(){//重写对话完成事件
+						this.hero.status.life = parseInt(this.hero.status.life/3*4);
+						this.hero.status.attack = parseInt(this.hero.status.attack/3*4);
+						this.hero.status.defence = parseInt(this.hero.status.defence.life/3*4);
+						this.showTips("获得仙女祝福，三维增加三分之一！",false,true);
+						this.taklingFlag = false;//结束对话
+					}
+				}else{
+					this.overTalking = function(){//重写对话完成事件
+						this.taklingFlag = false;//结束对话
+					}
 				}
-				this.spacingTalking();//手动触发一次
-			}else if(this.floor==0&&this.angel.talkStatus=='startOver'&&!this.hero.tools.cross){
-				//0层，小天使，待机状态，没有十字架
-				this.getTalkingText('angel','comeon');
-				this.overTalking = function(){//重写对话完成事件
-					this.taklingFlag = false;//结束对话
+			}else if(type==1007){//小偷
+				if(this.npc.thief==null){//第一次与小偷对话
+					this.getTalkingText('thief','start');
+					this.overTalking = function(){//重写对话完成事件
+						this.npc.thief = 'comeon';//对完话
+						this.taklingFlag = false;//结束对话
+						this.map[2][6][1]=4;//绿色墙变成道路
+					}
+				}else if(this.npc.thief=='comeon'&&!this.hero.tools.hammer){
+					//小偷，待机状态，没有星光神榔
+					this.getTalkingText('thief','comeon');
+					this.overTalking = function(){//重写对话完成事件
+						this.taklingFlag = false;//结束对话
+					}
+				}else if(this.npc.thief=='comeon'&&this.hero.tools.hammer){
+					this.getTalkingText('thief','end');
+					this.overTalking = function(){//重写对话完成事件
+						//TODO 修复18层路面
+						this.map[4][0][5] = 4;
+						this.taklingFlag = false;//结束对话
+					}
 				}
-				this.spacingTalking();//手动触发一次
+				
+			}else if(type==1008){//神秘老人
+				if(this.floor==2){//2层
+					this.getTalkingText('oldman','start');
+					this.overTalking = function(){//重写对话完成事件
+						this.hero.status.attack += 70;//攻击加70;
+						this.showTips("获得钢剑，攻击加70！",false,true);
+						this.map[2][x][y] = 4;
+						this.taklingFlag = false;//结束对话
+					}
+				}else if(this.floor == 15){//15层 500经验换120攻击
+					if(this.hero.status.exp<500){
+						this.getTalkingText('oldman','start');
+						this.overTalking = function(){
+							this.taklingFlag = false;//结束对话
+						};
+					}else{
+						this.getTalkingText('oldman','end');
+						this.overTalking = function(){//重写对话完成事件
+							this.hero.status.exp -= 500;
+							this.hero.status.attack += 120;//攻击加70;
+							this.showTips("获得圣光剑，攻击加120！",false,true);
+							this.map[15][x][y] = 4;
+							this.taklingFlag = false;//结束对话
+						}
+					}
+				}else if(this.floor == 16){
+					this.getTalkingText('oldman','start');
+					this.overTalking = function(){//重写对话完成事件
+						this.map[this.floor][x][y] = 4;
+						this.hero.tools.magicBar = true;
+						this.taklingFlag = false;//结束对话
+					}
+					
+				}
+			}else if(type==1009){//商人npc
+				if(this.floor==2){//2层
+					this.getTalkingText('businessman','start');
+					this.overTalking = function(){//重写对话完成事件
+						this.hero.status.defence+= 30;//攻击加70;
+						this.showTips("获得钢盾，防御加30！",false,true);
+						this.map[2][x][y] = 4;
+						this.taklingFlag = false;//结束对话
+					}
+				}else if(this.floor == 15){//15层 500金币换120防御
+					if(this.hero.status.gold<500){
+						this.getTalkingText('businessman','start');
+						this.overTalking = function(){
+							this.taklingFlag = false;//结束对话
+						};
+					}else{
+						this.getTalkingText('businessman','end');
+						this.overTalking = function(){//重写对话完成事件
+							this.hero.status.gold -= 500;
+							this.hero.status.defence += 120;//攻击加70;
+							this.showTips("获得星光盾，防御加120！",false,true);
+							this.map[15][x][y] = 4;
+							this.taklingFlag = false;//结束对话
+						}
+					}
+				}
+			}else if(type==1010){//红衣魔王
+				if(this.floor==16){
+					this.getTalkingText('monster','start');
+					this.overTalking = function(){//重写对话完成事件
+						this.map[this.floor][x][y] = 3029;//将红衣魔王从npc变成怪物
+						this.taklingFlag = false;//结束对话
+					}
+				}
 			}
+			
+			this.spacingTalking();//手动触发一次
+			
+		},
+		fence:function(x,y){//铁栅栏触发事件
+			if((this.floor==2&&x==7&&y==7)
+				||(this.floor==2&&x==7&&y==9)){//2层的两个老头
+				if(this.map[2][6][8]==4){//看守的怪死掉了
+					this.map[2][x][y]=4;
+				}
+			}else if((this.floor==4&&x==2&&y==5)){//4层小偷前
+				if(this.map[4][4][5]==4){//看守的怪死掉了
+					this.map[4][x][y]=4;
+				}
+			}else if(this.floor==7&&x==4&&y==4){//7层
+				if(this.map[7][4][3]==4){//看守的怪死掉了
+					this.map[7][x][y]=4;
+				}
+			}
+			
 		},
 		overTalking:function(){//对话结束触发事件，被各个触碰角色回写
 
@@ -283,6 +460,7 @@ var game = new Vue({
 				this.dialogBox.show = 'none';//关闭对话框
 				if(typeof(this.overTalking)=='function'){//对话结束回调
 					this.overTalking();
+					this.overTalking = function(){this.taklingFlag = false;};//回调触发结束后清空回调
 				}
 				return;
 			}
@@ -300,7 +478,7 @@ var game = new Vue({
 				var t = arr1[i];
 				t = "&&"+t;//开头增加两个占位
 				var l = t.length;//获取字符串长度
-				var time = Math.round(l/cutLength)+1;//获取被切分了多少份，每份cutLength个长度
+				var time = Math.floor(l/cutLength)+1;//获取被切分了多少份，每份cutLength个长度
 				for(var j = 0;j<time;j++){
 					var ind = j*cutLength;
 					var cutText = t.substr(ind,cutLength);
@@ -313,7 +491,6 @@ var game = new Vue({
 					}
 				}
 			}
-
 			if(this.dialogBox.selfIndex*2+1<=textArr.length){//如果还有对话，则显示对应对话
 				this.dialogBox.role = dialog.role;
 				this.dialogBox.roleName = dialog.roleName+":";
@@ -424,7 +601,7 @@ var game = new Vue({
 				this.showTips(tipsData[type],false,disappear);
 			}
 		},
-		touchMonster:function(x,y,type){
+		touchMonster:function(x,y,type){//碰触怪物,x,y,类型
 			if(this.checkCanAttack(type)==-1){//无法攻击
 				return;
 			}else{
@@ -441,8 +618,8 @@ var game = new Vue({
 			var hd = this.hero.status.defence;
 			var ext = 0;
 			if(type==3019){//TODO 预留魔法攻击怪物 直接削1/3血量
-				ext = Math.round(hl/3);
-				hl = Math.round(hl-ext);
+				ext = parseInt(hl/4);
+				hl = parseInt(hl-ext);
 			}
 			if(ha-md<=0){//英雄攻击小于怪物防御 无法攻击
 				return -1;
@@ -462,10 +639,15 @@ var game = new Vue({
 			var md = this.hero.attackStatus.monster.defence = monstersData[""+type+""][2];
 			var mg = this.hero.attackStatus.monster.gold = monstersData[""+type+""][3];
 			var mexp = this.hero.attackStatus.monster.exp = monstersData[""+type+""][4];
-			var heroA = Math.round(this.hero.status.attack-md);//英雄单次攻击
+			var heroA = Math.ceil(this.hero.status.attack-md);//英雄单次攻击
 			
-			var monsterA  = Math.round(ma-this.hero.status.defence);//怪物单次攻击
+			var monsterA  = Math.ceil(ma-this.hero.status.defence);//怪物单次攻击
 			this.hero.attackStatus.isAttck = true;//攻击开始
+			if(type==3019){//魔法攻击
+				var ext = 0;
+				ext = parseInt(this.hero.status.life/4);
+				this.hero.status.life = parseInt(this.hero.status.life-ext);
+			}
 			window.attInt = window.setInterval(function(){
 				if(game.hero.attackStatus.monster.life <= heroA){
 					game.hero.attackStatus.monster.life =0;				
@@ -603,7 +785,7 @@ var game = new Vue({
 				}else{//
 					var control = this.shop.control['item'+this.shop.selectItem];
 					if(this.hero.status[control['condition']]<control['cnumber']){
-						alert('货币不足');
+						return;
 					}else{
 						this.hero.status[control['condition']] -=control['cnumber'];
 						for(var i = 0;i<control.result.length;i++){
@@ -640,6 +822,10 @@ var game = new Vue({
 	},
 	watch:{//监听
 		stopMoveChange:function(flag){
+			if(game.taklingFlag==false){
+				game.dialogBox.text = [];
+				game.dialogBox.allText = [];
+			}
 			if(flag){
 				game.moveFlag = false;
 			}else{
@@ -647,6 +833,7 @@ var game = new Vue({
 			}
 		},
 		floorChange:function(floor){//楼层变化
+			
 			game.shadeStatus = true;
 			if(game.floorDown){//下楼
 				top = mapInitPosition[floor].x2*game.heroSize;
@@ -659,13 +846,15 @@ var game = new Vue({
 					game.hero.tools.compass.maxFloor = floor-1;
 				}
 			}
-			game.hero.top = top;
-			game.hero.left = left;
-			game.hero.faceTo=1;
-
+			if(!game.loadGame){
+				game.hero.top = top;
+				game.hero.left = left;
+				game.hero.faceTo=1;
+			}
 			window.setTimeout(function(){
-				game.shadeStatus = false;
+					game.shadeStatus = false;
 			},100);
+			
 		},
 		tipssStatusChange:function(flag){//战斗胜利提示框
 			if(flag){

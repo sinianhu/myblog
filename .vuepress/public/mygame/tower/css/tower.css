@@ -155,13 +155,13 @@ body{
 }
 .toolName{
 	font-family: 华文行楷;
-    font-size: 25px;
+    font-size: 40px;
 	
 }
 .toolText{
 	text-align: left;
-    font-size: 18px;
-    margin:4px;
+    font-size: 20px;
+    margin:10px;
 }
 .stipBox{
 	width: 90%;
@@ -184,6 +184,16 @@ body{
     bottom: 0px;
     right:5px;
     position: absolute;
+	animation: blingText 800ms ease-out infinite alternate;
+}
+
+@keyframes blingText {
+    0% {
+		color: white;
+    }
+    100% {
+        color: transparent;
+    }
 }
 
 .gameTable{
@@ -242,6 +252,7 @@ body{
     position: relative;
     bottom: 10px;
     right: 10px;
+	animation: blingText 800ms ease-in-out infinite alternate;
 }
 
 /*攻击框*/
@@ -335,6 +346,8 @@ body{
 .compassSelect td,.shopSelect td{
 	border:2px solid black;
 }
+
+
 
 .selectFloor{animation: glow 800ms ease-out infinite alternate; }
 @keyframes glow {

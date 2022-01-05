@@ -80,14 +80,12 @@
 							</tr>
 							<tr>
 								<td><div class="eleTd ">
-										<input v-model="hero.status.attack"/>
-										<input v-model="hero.status.defence"/>
-										<input v-model="hero.status.yellowKey"/>
-										<input v-model="hero.status.blueKey"/>
-										<input v-model="hero.status.redKey"/>
-										<input v-model="hero.tools.compass.selectFloor"/>
+										<input v-model.number="hero.status.attack" />
+										<input v-model.number="hero.status.defence"/>
+										<input v-model.number="hero.status.yellowKey"/>
+										<input v-model.number="hero.status.blueKey"/>
+										<input v-model.number="hero.status.redKey"/>
 										
-								
 								</div></td>
 								<td><div class="eleTd "></div></td>
 								<td><div class="eleTd "></div></td>
@@ -99,11 +97,11 @@
 						<table>
 							<tr>
 								<td>S 保存</td>
-								<td>Q 退出程序</td>
+								<td>R 重新开始</td>
 							</tr>
 							<tr>
 								<td>A 读取</td>
-								<td>R 重新开始</td>
+								<td></td>
 							</tr>
 						</table>
 					</div>
