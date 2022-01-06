@@ -110,7 +110,7 @@ var game = new Vue({
 	methods:{//方法
 		//键盘按下事件
 		keyDown:function(code){
-			console.log(code);
+			//console.log(code);
 			//优先判定移动，其次判定对话
 			if(this.moveFlag){//移动标志 自由移动状态
 				if(37==code){//左
@@ -424,16 +424,18 @@ var game = new Vue({
 			if((this.floor==2&&x==7&&y==7)
 				||(this.floor==2&&x==7&&y==9)){//2层的两个老头
 				if(this.map[2][6][8]==4){//看守的怪死掉了
-					this.map[2][x][y]=4;
+					this.map[this.floor][x][y] = 4;
 				}
 			}else if((this.floor==4&&x==2&&y==5)){//4层小偷前
 				if(this.map[4][4][5]==4){//看守的怪死掉了
-					this.map[4][x][y]=4;
+					this.map[this.floor][x][y] = 4;
 				}
 			}else if(this.floor==7&&x==4&&y==4){//7层
 				if(this.map[7][4][3]==4){//看守的怪死掉了
-					this.map[7][x][y]=4;
+					this.map[this.floor][x][y] = 4;
 				}
+			}else if(this.floor==10&&x==6&&y==3){//10层，无条件，直接去掉，莫名其妙的栅栏。。。
+				this.map[this.floor][x][y] = 4;
 			}
 			
 		},
@@ -576,7 +578,7 @@ var game = new Vue({
 					break;
 				case 2015://小飞羽 等级+1  血量+1000 攻击+10 防御+10
 					this.hero.status.level++;
-					this.hero.status.life+=10;
+					this.hero.status.life+=1000;
 					this.hero.status.attack+=10;
 					this.hero.status.defence+=10;
 					break;
@@ -591,6 +593,25 @@ var game = new Vue({
 					this.hero.tools.compass.have = true;
 					disappear = false;
 					break;
+				case 2019://青锋剑 攻击+70
+					this.hero.status.attack += 70;
+					break;
+				case 2020://黄金盾 防御+85
+					this.hero.status.defence += 85;
+					break;
+				case 2021://星光神榔 
+					this.hero.tools.hammer = true;
+					disappear = false;
+					break;
+				case 2022://大飞羽
+					this.hero.status.level += 3;
+					this.hero.status.life+=30;
+					this.hero.status.attack+=30;
+					this.hero.status.defence+=3000;
+					break;
+				case 2023://圣水瓶
+					this.hero.status.life += this.hero.status.life;
+					break;
 				default:
 					flag = false;
 			}
@@ -602,7 +623,10 @@ var game = new Vue({
 			}
 		},
 		touchMonster:function(x,y,type){//碰触怪物,x,y,类型
-			if(this.checkCanAttack(type)==-1){//无法攻击
+			var willLose = this.checkCanAttack(type);
+			if(willLose==-1
+				||willLose>=this.hero.status.life
+			){//无法攻击
 				return;
 			}else{
 				this.attackStart(x,y,type);
@@ -617,18 +641,30 @@ var game = new Vue({
 			var ha = this.hero.status.attack;
 			var hd = this.hero.status.defence;
 			var ext = 0;
-			if(type==3019){//TODO 预留魔法攻击怪物 直接削1/3血量
+			if(type==3019){//白衣武士直接削1/4血量
 				ext = parseInt(hl/4);
-				hl = parseInt(hl-ext);
+			}else if(type==3027){//灵法师削1/3血量
+				ext = parseInt(hl/3);
+			}else if(type==3020){//麻衣法师 固定造成100点伤害
+				ext = 100;
+			}else if(type==3017){//红衣法师 固定300伤害
+				ext = 300;
 			}
+			hl = parseInt(hl-ext);
 			if(ha-md<=0){//英雄攻击小于怪物防御 无法攻击
 				return -1;
 			}
 			var time = Math.ceil(ml/(ha-md));//怪物血量/(英雄攻击-怪物防御) 取整得到需要攻击的次数
-			if((ma-hd)*time>=hl){//(怪物攻击-英雄防御)*攻击次数大于等于英雄剩余血量 无法攻击
+			
+			/*
+			if((ma-hd)*(time-1)>=hl){//(怪物攻击-英雄防御)*攻击次数大于等于英雄剩余血量 无法攻击
 				return -1;
 			}
-			var lossLife = ma-hd<=0?0:Math.ceil(ext+(ma-hd)*(time-1));
+			*/
+			var singleAttack = ma-hd<=0?0:ma-hd;
+			
+			var lossLife = Math.ceil((singleAttack)*(time-1)+ext);
+			
 			return lossLife;
 		},
 		attackStart:function(x,y,type){//攻击开始
@@ -642,12 +678,23 @@ var game = new Vue({
 			var heroA = Math.ceil(this.hero.status.attack-md);//英雄单次攻击
 			
 			var monsterA  = Math.ceil(ma-this.hero.status.defence);//怪物单次攻击
-			this.hero.attackStatus.isAttck = true;//攻击开始
-			if(type==3019){//魔法攻击
-				var ext = 0;
-				ext = parseInt(this.hero.status.life/4);
-				this.hero.status.life = parseInt(this.hero.status.life-ext);
+			if(monsterA<0){//怪物单次攻击比0小则设置为0，否则越打血越多！
+				monsterA = 0;
 			}
+			this.hero.attackStatus.isAttck = true;//攻击开始
+			var ext = 0;
+			if(type==3019){//白衣武士魔法攻击 削1/4血量
+				ext = parseInt(this.hero.status.life/4);	
+			}else if(type==3027){//灵法师 削1/3血量
+				ext = parseInt(this.hero.status.life/3);
+			}else if(type==3020){
+				ext = 100;
+			}else if(type==3017){
+				ext = 300;
+			}
+			
+			this.hero.status.life = parseInt(this.hero.status.life-ext);
+			
 			window.attInt = window.setInterval(function(){
 				if(game.hero.attackStatus.monster.life <= heroA){
 					game.hero.attackStatus.monster.life =0;				
@@ -660,7 +707,7 @@ var game = new Vue({
 						game.hero.status.life -= monsterA;
 					},100)
 				}
-			},200);
+			},150);
 			
 		},
 		attackEnd:function(x,y,monster){//攻击结束
@@ -705,8 +752,9 @@ var game = new Vue({
 			//判断此时任务是否在楼梯旁边
 			var x = Math.round(this.hero.top/this.heroSize);
 			var y = Math.round(this.hero.left/this.heroSize);
-			var flag = false;//附近有楼梯标志
+			var flag = false;//附近有楼梯标志  这个条件印象中有，实际游戏中没有了！
 			var floor = this.floor;
+			/*
 			if(
 			(x>0&&(this.map[floor][x-1][y]==5||this.map[floor][x-1][y]==6))
 			||(x<10&&(this.map[floor][x+1][y]==5||this.map[floor][x+1][y]==6))
@@ -715,9 +763,15 @@ var game = new Vue({
 			){
 				flag = true;
 			}else{
-				alert('只有站在楼梯口才能使用风之罗盘');
+				//alert('只有站在楼梯口才能使用风之罗盘');
+				//return false;
+			}
+			*/
+
+			if(this.floor == 21){//21层禁用
 				return false;
-			}		
+			}
+			
 			if(this.hero.tools.compass.show){
 				this.hero.tools.compass.show = false;
 				this.hero.tools.compass.status  = 0;
@@ -746,6 +800,7 @@ var game = new Vue({
 					shop = shopSetting.gold3;
 				}else if(floor==11){
 					shop = shopSetting.gold11;
+					this.shop.status = 1;
 				}
 			}else if(type==1002){//蓝色老头
 				if(floor==5){
