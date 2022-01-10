@@ -82,8 +82,9 @@ var game = new Vue({
 			allText:[]
 		},
 		npc:{//npc状态记录
-			anger:null,//null/start/startOver
+			angel:null,//null/start/startOver
 			thief:null,//null/wait
+			princess:null,//公主  null/wait
 		},
 		tips:{//提示框控制器
 			sStatus:false,//战斗胜利字样显示状态
@@ -265,7 +266,7 @@ var game = new Vue({
 			}else if(1002<=touchType&&touchType<=1006){//各种道具商店
 				this.showShop(this.floor,touchType);
 				return;
-			}else if(1007<=touchType&&touchType<=1010){//npc
+			}else if(1007<=touchType&&touchType<=1999 ){//npc
 				this.npcTalk(x,y,touchType);
 				return;
 			}else if(2001<=touchType&&touchType<=2999){//触碰道具
@@ -308,8 +309,8 @@ var game = new Vue({
 					this.overTalking = function(){//重写对话完成事件
 						this.taklingFlag = false;//结束对话
 					}
-				}else if(this.floor==0&&(this.npc.angel=='startOver'||this.npc.angel=='magicBar')&&this.hero.tools.cross){
-					//0层 仙子 待机状态/法杖状态 十字架 三维各增加1/3
+				}else if(this.floor==0&&this.npc.angel=='startOver'&&this.hero.tools.cross){//没拿到法杖来提交十字架
+					//0层 仙子 待机状态 十字架 三维各增加1/3
 					this.getTalkingText('angel','cross');
 					this.npc.angel = "cross";
 					this.overTalking = function(){//重写对话完成事件
@@ -317,9 +318,27 @@ var game = new Vue({
 						this.hero.status.attack = parseInt(this.hero.status.attack/3*4);
 						this.hero.status.defence = parseInt(this.hero.status.defence.life/3*4);
 						this.showTips("获得仙女祝福，三维增加三分之一！",false,true);
+						this.map[0][x][y] = 4;
+						this.map[20][7][5]= 5;//开通上21的楼梯
+						this.taklingFlag = false;//结束对话
+						 
+					}
+				}else if(this.floor==0&&this.npc.angel=='magicBar'&&this.hero.tools.cross){//拿到法杖来提交十字架
+					//0层 仙子 待机状态/法杖状态 十字架 三维各增加1/3
+					this.getTalkingText('angel','crossAndBar');
+					this.npc.angel = "cross";
+					this.overTalking = function(){//重写对话完成事件
+						this.hero.status.life = parseInt(this.hero.status.life/3*4);
+						this.hero.status.attack = parseInt(this.hero.status.attack/3*4);
+						this.hero.status.defence = parseInt(this.hero.status.defence/3*4);
+						this.showTips("获得仙女祝福，三维增加三分之一！",false,true);
+						this.map[0][x][y] = 4;
+						this.map[20][7][5]= 5;//开通上21的楼梯
+						this.map[21][0][5]= 5;//开通上22的楼梯
 						this.taklingFlag = false;//结束对话
 					}
-				}else{
+				}
+				else{
 					this.overTalking = function(){//重写对话完成事件
 						this.taklingFlag = false;//结束对话
 					}
@@ -341,7 +360,8 @@ var game = new Vue({
 				}else if(this.npc.thief=='comeon'&&this.hero.tools.hammer){
 					this.getTalkingText('thief','end');
 					this.overTalking = function(){//重写对话完成事件
-						//TODO 修复18层路面
+						this.map[18][8][5] = 4;
+						this.map[18][9][5] = 4;
 						this.map[4][0][5] = 4;
 						this.taklingFlag = false;//结束对话
 					}
@@ -415,6 +435,21 @@ var game = new Vue({
 						this.taklingFlag = false;//结束对话
 					}
 				}
+			}else if(type==1011){//公主
+				if(this.floor==18&&this.npc.princess==null){
+					this.getTalkingText('princess','start');
+					this.overTalking = function(){//重写对话完成事件
+						this.npc.princess = 'wait';
+						this.map[18][10][10] = 5;//打通到19层的楼梯
+						this.taklingFlag = false;//结束对话
+					}
+				}else if(this.floor==18&&this.npc.princess=='wait'){
+					this.getTalkingText('princess','wait');
+					this.overTalking = function(){//重写对话完成事件
+						this.taklingFlag = false;//结束对话
+					}
+				}
+				
 			}
 			
 			this.spacingTalking();//手动触发一次
@@ -437,6 +472,10 @@ var game = new Vue({
 			}else if(this.floor==10&&x==6&&y==3){//10层，无条件，直接去掉，莫名其妙的栅栏。。。
 				this.map[this.floor][x][y] = 4;
 			}else if(this.floor==13&&x==6&&y==3){//13层，左边那个栅栏
+				this.map[this.floor][x][y] = 4;
+			}else if(this.floor==18&&x==5&&y==5){//18层，关着公主的栏杆
+				this.map[this.floor][x][y] = 4;
+			}else if(this.floor==19){//19层
 				this.map[this.floor][x][y] = 4;
 			}
 			
@@ -607,12 +646,18 @@ var game = new Vue({
 					break;
 				case 2022://大飞羽
 					this.hero.status.level += 3;
-					this.hero.status.life+=30;
+					this.hero.status.life+=3000;
 					this.hero.status.attack+=30;
-					this.hero.status.defence+=3000;
+					this.hero.status.defence+=30;
 					break;
 				case 2023://圣水瓶
 					this.hero.status.life += this.hero.status.life;
+					break;
+				case 2024://星光神剑 攻击+150
+					this.hero.status.attack += 150;
+					break;
+				case 2025://光芒神盾 防御+190
+					this.hero.status.defence += 190;
 					break;
 				default:
 					flag = false;
@@ -645,7 +690,7 @@ var game = new Vue({
 			var ext = 0;
 			if(type==3019){//白衣武士直接削1/4血量
 				ext = parseInt(hl/4);
-			}else if(type==3027){//灵法师削1/3血量
+			}else if(type==3027||type==3036){//灵法师削1/3血量
 				ext = parseInt(hl/3);
 			}else if(type==3020){//麻衣法师 固定造成100点伤害
 				ext = 100;
@@ -687,7 +732,7 @@ var game = new Vue({
 			var ext = 0;
 			if(type==3019){//白衣武士魔法攻击 削1/4血量
 				ext = parseInt(this.hero.status.life/4);	
-			}else if(type==3027){//灵法师 削1/3血量
+			}else if(type==3027||type==3036){//灵法师 削1/3血量
 				ext = parseInt(this.hero.status.life/3);
 			}else if(type==3020){
 				ext = 100;
@@ -717,6 +762,27 @@ var game = new Vue({
 			this.hero.status.gold += monster[3];
 			this.hero.status.exp += monster[4];
 			this.map[this.floor][x][y] = 4;
+			if(this.floor==19&&monster[6]==3034){//18层冥灵魔王打完显示对话
+				window.setTimeout(function(){
+					game.getTalkingText('monster','end');
+					game.overTalking = function(){//重写对话完成事件
+						game.taklingFlag = false;//结束对话
+					}
+					game.spacingTalking();//手动触发一次
+				},350);
+			}else if(this.floor==21&&monster[6]==3035){//21层大魔王挂掉
+				window.setTimeout(function(){
+					game.getTalkingText('monster','end');
+					game.overTalking = function(){//重写对话完成事件
+						game.taklingFlag = false;//结束对话
+						if(game.map[21][0][5]==2){
+							alert('恭喜通关！未成功解锁隐藏关，请再接再厉！');
+						}
+					}
+					game.spacingTalking();//手动触发一次
+				},350);
+			}
+			
 		},
 		showTips:function(text,attackFlag,disappear){//提示框  文本，战斗胜利？不自动消失？
 			this.tips.text = text;

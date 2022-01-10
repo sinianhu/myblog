@@ -151,12 +151,11 @@ body{
 	text-align: center;
     color: white;
     font-size: 30px;
-    font-weight: bold;
 }
 .toolName{
 	font-family: 华文行楷;
-    font-size: 40px;
-	
+    font-size: 35px;
+    font-weight: normal;
 }
 .toolText{
 	text-align: left;
