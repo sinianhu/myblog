@@ -59,7 +59,7 @@
 						</table>
 					</div>
 					<div class="floorArea">
-							{{floor==0?'序章':'第'+floor+'层'}}
+							{{floorShowText()}}
 					</div>
 					
 					<div class="toolsArea">
@@ -363,7 +363,7 @@
 								<img src="img/4004.png">
 								<br/>
 								<span>
-								-- {{floor==0?'序章':'第'+floor+'层'}} --
+								-- {{floorShowText()}} --
 								</span>
 							</div>
 						</transition >

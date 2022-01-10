@@ -34,6 +34,7 @@ var game = new Vue({
 				cross:false,//十字架
 				hammer:false,//星光神榔
 				magicBar:false,//16层的法杖
+				magicBarNumber:0,
 				handBook:{//图鉴
 					have:false,
 					show:false,
@@ -260,6 +261,19 @@ var game = new Vue({
 			}else if(touchType==7){//铁栅栏
 				this.fence(x,y);
 				return;
+			}else if(touchType==9){//去23右
+				this.floor = 24;
+				return;
+			}else if(touchType==10){//去23下
+				this.floor = 25;
+				return;
+			}else if(touchType==11){//下到22
+				this.floorDown = true;
+				this.floor = 22;
+				return;
+			}else if(touchType==12){//去地下层
+				this.floor ++;
+				return;
 			}else if(touchType==1001){//仙子
 				this.npcTalk(x,y,touchType);
 				return;
@@ -326,7 +340,7 @@ var game = new Vue({
 				}else if(this.floor==0&&this.npc.angel=='magicBar'&&this.hero.tools.cross){//拿到法杖来提交十字架
 					//0层 仙子 待机状态/法杖状态 十字架 三维各增加1/3
 					this.getTalkingText('angel','crossAndBar');
-					this.npc.angel = "cross";
+					this.npc.angel = "crossAndBar";
 					this.overTalking = function(){//重写对话完成事件
 						this.hero.status.life = parseInt(this.hero.status.life/3*4);
 						this.hero.status.attack = parseInt(this.hero.status.attack/3*4);
@@ -337,6 +351,20 @@ var game = new Vue({
 						this.map[21][0][5]= 5;//开通上22的楼梯
 						this.taklingFlag = false;//结束对话
 					}
+				}else if(this.floor==22){//22层仙子对话
+					if(this.hero.tools.magicBarNumber<3){
+						this.getTalkingText('angel','start');
+					}else if(this.hero.tools.magicBarNumber==3){
+						this.getTalkingText('angel','end');
+						this.hero.tools.magicBarNumber = 100;
+					}else{
+						
+					}
+					this.overTalking = function(){//重写对话完成事件
+						this.taklingFlag = false;//结束对话
+					}
+					
+					
 				}
 				else{
 					this.overTalking = function(){//重写对话完成事件
@@ -397,6 +425,7 @@ var game = new Vue({
 					this.overTalking = function(){//重写对话完成事件
 						this.map[this.floor][x][y] = 4;
 						this.hero.tools.magicBar = true;
+						this.hero.tools.magicBarNumber ++;
 						this.taklingFlag = false;//结束对话
 					}
 					
@@ -456,26 +485,22 @@ var game = new Vue({
 			
 		},
 		fence:function(x,y){//铁栅栏触发事件
-			if((this.floor==2&&x==7&&y==7)
-				||(this.floor==2&&x==7&&y==9)){//2层的两个老头
-				if(this.map[2][6][8]==4){//看守的怪死掉了
-					this.map[this.floor][x][y] = 4;
-				}
-			}else if((this.floor==4&&x==2&&y==5)){//4层小偷前
-				if(this.map[4][4][5]==4){//看守的怪死掉了
-					this.map[this.floor][x][y] = 4;
-				}
-			}else if(this.floor==7&&x==4&&y==4){//7层
+			if(this.floor==7&&x==4&&y==4){//7层
 				if(this.map[7][4][3]==4){//看守的怪死掉了
 					this.map[this.floor][x][y] = 4;
 				}
-			}else if(this.floor==10&&x==6&&y==3){//10层，无条件，直接去掉，莫名其妙的栅栏。。。
-				this.map[this.floor][x][y] = 4;
 			}else if(this.floor==13&&x==6&&y==3){//13层，左边那个栅栏
 				this.map[this.floor][x][y] = 4;
-			}else if(this.floor==18&&x==5&&y==5){//18层，关着公主的栏杆
-				this.map[this.floor][x][y] = 4;
-			}else if(this.floor==19){//19层
+			}else if(//其他层莫名其妙的铁栅栏，碰到就消失即可
+				this.floor==2||
+				this.floor==4||
+				this.floor==10||
+				this.floor==14||
+				this.floor==18||
+				this.floor==19||
+				this.floor==23||
+				this.floor==24||
+				this.floor==25){
 				this.map[this.floor][x][y] = 4;
 			}
 			
@@ -659,6 +684,12 @@ var game = new Vue({
 				case 2025://光芒神盾 防御+190
 					this.hero.status.defence += 190;
 					break;
+				case 2026://炎之魔杖
+					this.hero.tools.magicBarNumber++;
+					break;
+				case 2027://心之魔杖
+					this.hero.tools.magicBarNumber++;
+					break;
 				default:
 					flag = false;
 			}
@@ -690,7 +721,7 @@ var game = new Vue({
 			var ext = 0;
 			if(type==3019){//白衣武士直接削1/4血量
 				ext = parseInt(hl/4);
-			}else if(type==3027||type==3036){//灵法师削1/3血量
+			}else if(type==3027||type==3036||type==3038){//灵法师削1/3血量
 				ext = parseInt(hl/3);
 			}else if(type==3020){//麻衣法师 固定造成100点伤害
 				ext = 100;
@@ -732,7 +763,7 @@ var game = new Vue({
 			var ext = 0;
 			if(type==3019){//白衣武士魔法攻击 削1/4血量
 				ext = parseInt(this.hero.status.life/4);	
-			}else if(type==3027||type==3036){//灵法师 削1/3血量
+			}else if(type==3027||type==3036||type==3038){//灵法师 削1/3血量
 				ext = parseInt(this.hero.status.life/3);
 			}else if(type==3020){
 				ext = 100;
@@ -775,11 +806,39 @@ var game = new Vue({
 					game.getTalkingText('monster','end');
 					game.overTalking = function(){//重写对话完成事件
 						game.taklingFlag = false;//结束对话
-						if(game.map[21][0][5]==2){
+						if(game.npc.angel=='crossAndBar'){//十字架
+							game.map[21][1][5] = 5;
+						}else{
 							alert('恭喜通关！未成功解锁隐藏关，请再接再厉！');
 						}
 					}
 					game.spacingTalking();//手动触发一次
+				},350);
+			}else if(this.floor==26&&(monster[6]>=3040&&monster[6]<=3048)){//打败了血影
+				this.map[26][1][4]=4;
+				this.map[26][1][5]=4;
+				this.map[26][1][6]=4;
+				this.map[26][2][4]=4;
+				this.map[26][2][5]=4;
+				this.map[26][2][6]=4;
+				this.map[26][3][4]=4;
+				this.map[26][3][5]=4;
+				this.map[26][3][6]=4;
+				window.setTimeout(function(){
+					alert('恭喜完整通关！');
+				},350);
+			}else if(this.floor==26&&(monster[6]>=3049&&monster[6]<=3057)){//打败了魔龙
+				this.map[26][1][4]=4;
+				this.map[26][1][5]=4;
+				this.map[26][1][6]=4;
+				this.map[26][2][4]=4;
+				this.map[26][2][5]=4;
+				this.map[26][2][6]=4;
+				this.map[26][3][4]=4;
+				this.map[26][3][5]=4;
+				this.map[26][3][6]=4;
+				window.setTimeout(function(){
+					alert('开挂了！你一定开挂了！竟然打死了魔龙！！！');
 				},350);
 			}
 			
@@ -803,9 +862,12 @@ var game = new Vue({
 				var monsters = [];
 				for(var i =0;i<map.length;i++){
 					for(var j = 0;j<map[i].length;j++){
-						if(map[i][j]>=3001&&map[i][j]<=3999){//怪物
+						if(map[i][j]>=3001&&map[i][j]<=3039){//怪物
+							monsters.pushNoRepeat(map[i][j]);
+						}else if(map[i][j]==3047||map[i][j]==3056){
 							monsters.pushNoRepeat(map[i][j]);
 						}
+						
 					}
 				}
 				this.hero.tools.handBook.monsters = new Array();
@@ -836,7 +898,7 @@ var game = new Vue({
 			}
 			*/
 
-			if(this.floor == 21){//21层禁用
+			if(this.floor == 21||this.floor==26){//21层禁用  26层（地下层）禁用
 				return false;
 			}
 			
@@ -851,7 +913,8 @@ var game = new Vue({
 		changeFloor:function(upordown,flag){//进行楼层跳跃 up 1 down -1  flag确认楼层
 			if(!flag){//上/下
 				var selectFloor = this.hero.tools.compass.selectFloor;
-				if(selectFloor+upordown>=1&&selectFloor+upordown<=this.hero.tools.compass.maxFloor){
+				var maxF = this.hero.tools.compass.maxFloor>20?20:this.hero.tools.compass.maxFloor;
+				if(selectFloor+upordown>=1&&selectFloor+upordown<=maxF){
 					this.hero.tools.compass.selectFloor = selectFloor+upordown;
 				}
 			}else{
@@ -924,6 +987,32 @@ var game = new Vue({
 			if(this.hero.tools.cross&&type==1008){//有了十字架，并且还是老头，则置为墙壁，隐藏失效
 				this.map[16][4][4] = 1;
 			}
+		},
+		floor26:function(){
+			var num = this.hero.tools.magicBarNumber;
+			if(num!=100){
+				this.map[26][1][4]+=9;
+				this.map[26][1][5]+=9;
+				this.map[26][1][6]+=9;
+				this.map[26][2][4]+=9;
+				this.map[26][2][5]+=9;
+				this.map[26][2][6]+=9;
+				this.map[26][3][4]+=9;
+				this.map[26][3][5]+=9;
+				this.map[26][3][6]+=9;
+			}
+		},
+		floorShowText:function(){
+			var floor = this.floor;
+			if(floor==0){
+				return '序章';
+			}else if(floor==24||floor==25){
+				return '第23层';
+			}else if(floor==26){
+				return '地下层';
+			}else{
+				return '第'+floor+'层';
+			}
 		}
 
 	},	
@@ -961,12 +1050,20 @@ var game = new Vue({
 				game.moveFlag = true;
 			}
 		},
-		floorChange:function(floor){//楼层变化
+		floorChange:function(floor,oldFloor){//楼层变化
 			game.shadeStatus = true;
 			if(game.floorDown){//下楼
 				top = mapInitPosition[floor].x2*game.heroSize;
 				left = mapInitPosition[floor].y2*game.heroSize;
+				if(floor==22&&oldFloor==24){
+					top = mapInitPosition[floor].x3*game.heroSize;
+					left = mapInitPosition[floor].y3*game.heroSize;
+				}else if(floor==22&&oldFloor==25){
+					top = mapInitPosition[floor].x4*game.heroSize;
+					left = mapInitPosition[floor].y4*game.heroSize;
+				}
 				game.floorDown = false;
+				
 			}else{
 				var top = mapInitPosition[floor].x1*game.heroSize;
 				var left = mapInitPosition[floor].y1*game.heroSize;
@@ -977,11 +1074,18 @@ var game = new Vue({
 			if(floor==16){//如果是16层触发判定
 				game.floor16();
 			}
+			if(floor==26){//26层判定，如果没收集齐3种灵杖则将血影换成魔龙
+				game.floor26();
+			}
+			
 			if(!game.loadGame){
 				game.hero.top = top;
 				game.hero.left = left;
 				game.hero.faceTo=1;
 			}
+			
+			
+			
 			window.setTimeout(function(){
 					game.shadeStatus = false;
 			},100);
