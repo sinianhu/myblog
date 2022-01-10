@@ -407,11 +407,11 @@ var game = new Vue({
 						}
 					}
 				}
-			}else if(type==1010){//红衣魔王
+			}else if(type==1010){//红衣魔王对话地板
 				if(this.floor==16){
 					this.getTalkingText('monster','start');
 					this.overTalking = function(){//重写对话完成事件
-						this.map[this.floor][x][y] = 3029;//将红衣魔王从npc变成怪物
+						this.map[this.floor][x][y] = 4;//将对话地板改为正常地板
 						this.taklingFlag = false;//结束对话
 					}
 				}
@@ -435,6 +435,8 @@ var game = new Vue({
 					this.map[this.floor][x][y] = 4;
 				}
 			}else if(this.floor==10&&x==6&&y==3){//10层，无条件，直接去掉，莫名其妙的栅栏。。。
+				this.map[this.floor][x][y] = 4;
+			}else if(this.floor==13&&x==6&&y==3){//13层，左边那个栅栏
 				this.map[this.floor][x][y] = 4;
 			}
 			
@@ -851,6 +853,12 @@ var game = new Vue({
 				
 			}
 		},
+		floor16:function(){//16层判定
+			var type = this.map[16][4][4];
+			if(this.hero.tools.cross&&type==1008){//有了十字架，并且还是老头，则置为墙壁，隐藏失效
+				this.map[16][4][4] = 1;
+			}
+		}
 
 	},	
 	components: {//自定义组件
@@ -888,7 +896,6 @@ var game = new Vue({
 			}
 		},
 		floorChange:function(floor){//楼层变化
-			
 			game.shadeStatus = true;
 			if(game.floorDown){//下楼
 				top = mapInitPosition[floor].x2*game.heroSize;
@@ -900,6 +907,9 @@ var game = new Vue({
 				if(floor-1>game.hero.tools.compass.maxFloor){//上楼时判断下一层是否被记录走过的最大楼层
 					game.hero.tools.compass.maxFloor = floor-1;
 				}
+			}
+			if(floor==16){//如果是16层触发判定
+				game.floor16();
 			}
 			if(!game.loadGame){
 				game.hero.top = top;
