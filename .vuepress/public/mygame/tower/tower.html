@@ -10,7 +10,18 @@
 	<script src="js/maps.js"></script>
 
 	<body  ondragstart="return false" oncontextmenu="return false" onselectstart="return false" >
-		<div id="tower">
+		<div id="loading">
+			
+			<div class="loadTitle">资源加载中</div>
+			<div style="position:relative">
+				
+				<div class="loadBar"></div>
+				<div class="loadNum">0/0</div>
+				<div class="bgProcessBar"></div>
+			</div>
+		
+		</div>
+		<div id="tower" style="display:none">
 			<div class="left">
 				<div  class="propArea">
 					<div class="statusArea"> 
@@ -116,11 +127,6 @@
 							</tr>
 							
 						</table>
-						
-						
-						
-						
-						
 						
 						<!-- 英雄 -->
 						<div class="eleTd hero" 
@@ -367,8 +373,6 @@
 								</span>
 							</div>
 						</transition >
-
-
 					</div>
 				</div>
 			</div>

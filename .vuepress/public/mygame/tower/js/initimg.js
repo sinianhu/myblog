@@ -8,7 +8,11 @@ function $c(tagName) {
 function _isFn(fn){
 	return typeof(fn)=='function';
 }
+
+
 window.onload = function() {
+	window.loadImgNum = 0;
+	window.hasLoadImgNum = 0;
     imageLoad({
         url: function(v) {
             v = [];
@@ -49,6 +53,23 @@ window.onload = function() {
             }
         }
     });
+	
+	window.loadImgBar = window.setTimeout(function(){
+		var all = window.loadImgNum;
+		var now = window.hasLoadImgNum;
+		if(all==0){
+			$(".loadNum").html('0/0');
+		}else{
+			$(".loadNum").html(now+'/'+all);
+			var bfb = Math.ceil(parseFloat(now)/parseFloat(all)*100);
+			$(".loadBar").animate({
+				width:bfb+"%"
+			});
+		}
+		if(bfb>95){
+			window.clearTimeout(window.loadImgBar);
+		}
+	},100)
 };
 
 
@@ -72,6 +93,7 @@ function imageLoad(s) {
     default:
         return false;
     }
+	window.loadImgNum = urlset.length;
     var imgset = [],
     r = {
         total: urlset.length,
@@ -139,6 +161,12 @@ function imageLoad(s) {
             break;
         }
         r.complete++; 
+		if(r.complete>=r.total*0.9){//加载90%即可认为结束
+			//console.log('素材加载完毕！');
+			//$("#loading").hide();
+			//$("#tower").show();
+		}
+		window.hasLoadImgNum = r.complete;
 		// oncomplete 事件回调         
 		if( _isFn(s.oncomplete) ){ s.oncomplete.call(this, r); }  
 		
