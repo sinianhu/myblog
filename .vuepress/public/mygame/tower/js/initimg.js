@@ -163,8 +163,8 @@ function imageLoad(s) {
         r.complete++; 
 		if(r.complete>=r.total*0.9){//加载90%即可认为结束
 			//console.log('素材加载完毕！');
-			//$("#loading").hide();
-			//$("#tower").show();
+			$("#loading").hide();
+			$("#tower").show();
 		}
 		window.hasLoadImgNum = r.complete;
 		// oncomplete 事件回调         
