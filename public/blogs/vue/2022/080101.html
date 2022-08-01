@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>tomcat调优 | 虎博站</title>
+    <meta name="generator" content="VuePress 1.8.2">
+    <link rel="icon" href="/img/favicon.ico">
+    <meta name="description" content="我的个人博客">
+    <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
+    
+    <link rel="preload" href="/assets/css/0.styles.87064c2e.css" as="style"><link rel="preload" href="/assets/js/app.deb02246.js" as="script"><link rel="preload" href="/assets/js/3.a821e41c.js" as="script"><link rel="preload" href="/assets/js/1.22b00a64.js" as="script"><link rel="preload" href="/assets/js/16.8d788fd5.js" as="script"><link rel="prefetch" href="/assets/js/10.2c800373.js"><link rel="prefetch" href="/assets/js/11.489d76d8.js"><link rel="prefetch" href="/assets/js/12.bbaa5441.js"><link rel="prefetch" href="/assets/js/13.9b646f57.js"><link rel="prefetch" href="/assets/js/14.8d1ed805.js"><link rel="prefetch" href="/assets/js/15.b72cd183.js"><link rel="prefetch" href="/assets/js/17.47ddb341.js"><link rel="prefetch" href="/assets/js/18.eef24406.js"><link rel="prefetch" href="/assets/js/4.0df322ad.js"><link rel="prefetch" href="/assets/js/5.87a5585f.js"><link rel="prefetch" href="/assets/js/6.128e03f5.js"><link rel="prefetch" href="/assets/js/7.801b415c.js"><link rel="prefetch" href="/assets/js/8.297c2aeb.js"><link rel="prefetch" href="/assets/js/9.fe735ddb.js">
+    <link rel="stylesheet" href="/assets/css/0.styles.87064c2e.css">
+  </head>
+  <body>
+    <div id="app" data-server-rendered="true"><div class="theme-container no-sidebar" data-v-999d3bb4><div data-v-999d3bb4><div id="loader-wrapper" class="loading-wrapper" data-v-2c578df8 data-v-999d3bb4 data-v-999d3bb4><div class="loader-main" data-v-2c578df8><div data-v-2c578df8></div><div data-v-2c578df8></div><div data-v-2c578df8></div><div data-v-2c578df8></div></div> <!----> <!----></div> <div class="password-shadow password-wrapper-out" style="display:none;" data-v-067bd032 data-v-999d3bb4 data-v-999d3bb4><h3 class="title" data-v-067bd032 data-v-067bd032>虎博站</h3> <p class="description" data-v-067bd032 data-v-067bd032>我的个人博客</p> <label id="box" class="inputBox" data-v-067bd032 data-v-067bd032><input type="password" value="" data-v-067bd032> <span data-v-067bd032>Konck! Knock!</span> <button data-v-067bd032>OK</button></label> <div class="footer" data-v-067bd032 data-v-067bd032><span data-v-067bd032><i class="iconfont reco-theme" data-v-067bd032></i> <a target="blank" href="https://vuepress-theme-reco.recoluan.com" data-v-067bd032>vuePress-theme-reco</a></span> <span data-v-067bd032><i class="iconfont reco-copyright" data-v-067bd032></i> <a data-v-067bd032><span data-v-067bd032>思念虎</span>
+            
+          <span data-v-067bd032>2021/12/22 - </span>
+          2022
+        </a></span></div></div> <div class="hide" data-v-999d3bb4><header class="navbar" data-v-999d3bb4><div class="sidebar-button"><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" viewBox="0 0 448 512" class="icon"><path fill="currentColor" d="M436 124H12c-6.627 0-12-5.373-12-12V80c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12z"></path></svg></div> <a href="/" class="home-link router-link-active"><img src="/img/logo.png" alt="虎博站" class="logo"> <span class="site-name">虎博站</span></a> <div class="links"><div class="color-picker"><a class="color-button"><i class="iconfont reco-color"></i></a> <div class="color-picker-menu" style="display:none;"><div class="mode-options"><h4 class="title">Choose mode</h4> <ul class="color-mode-options"><li class="dark">dark</li><li class="auto active">auto</li><li class="light">light</li></ul></div></div></div> <div class="search-box"><i class="iconfont reco-search"></i> <input aria-label="Search" autocomplete="off" spellcheck="false" value=""> <!----></div> <nav class="nav-links can-hide"><div class="nav-item"><a href="/" class="nav-link"><i class="iconfont reco-home"></i>
+  首页
+</a></div><div class="nav-item"><div class="dropdown-wrapper"><a class="dropdown-title"><span class="title"><i class="iconfont reco-category"></i>
+      分类
+    </span> <span class="arrow right"></span></a> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/categories/vue学习/" class="nav-link"><i class="undefined"></i>
+  vue学习
+</a></li><li class="dropdown-item"><!----> <a href="/categories/算法/" class="nav-link"><i class="undefined"></i>
+  算法
+</a></li><li class="dropdown-item"><!----> <a href="/categories/java/" class="nav-link"><i class="undefined"></i>
+  java
+</a></li><li class="dropdown-item"><!----> <a href="/categories/Games/" class="nav-link"><i class="undefined"></i>
+  Games
+</a></li></ul></div></div><div class="nav-item"><a href="/tag/" class="nav-link"><i class="iconfont reco-tag"></i>
+  标签
+</a></div><div class="nav-item"><a href="/timeline/" class="nav-link"><i class="iconfont reco-date"></i>
+  时间轴
+</a></div><div class="nav-item"><a href="/docs/mygame/mine.html" class="nav-link"><i class="iconfont reco-message"></i>
+  练手项目
+</a></div> <!----></nav></div></header> <div class="sidebar-mask" data-v-999d3bb4></div> <aside class="sidebar" data-v-999d3bb4><div class="personal-info-wrapper" data-v-e2878dae data-v-999d3bb4><img src="/img/avatar.png" alt="author-avatar" class="personal-img" data-v-e2878dae> <h3 class="name" data-v-e2878dae>
+    思念虎
+  </h3> <div class="num" data-v-e2878dae><div data-v-e2878dae><h3 data-v-e2878dae>8</h3> <h6 data-v-e2878dae>Articles</h6></div> <div data-v-e2878dae><h3 data-v-e2878dae>6</h3> <h6 data-v-e2878dae>Tags</h6></div></div> <ul class="social-links" data-v-e2878dae></ul> <hr data-v-e2878dae></div> <nav class="nav-links"><div class="nav-item"><a href="/" class="nav-link"><i class="iconfont reco-home"></i>
+  首页
+</a></div><div class="nav-item"><div class="dropdown-wrapper"><a class="dropdown-title"><span class="title"><i class="iconfont reco-category"></i>
+      分类
+    </span> <span class="arrow right"></span></a> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/categories/vue学习/" class="nav-link"><i class="undefined"></i>
+  vue学习
+</a></li><li class="dropdown-item"><!----> <a href="/categories/算法/" class="nav-link"><i class="undefined"></i>
+  算法
+</a></li><li class="dropdown-item"><!----> <a href="/categories/java/" class="nav-link"><i class="undefined"></i>
+  java
+</a></li><li class="dropdown-item"><!----> <a href="/categories/Games/" class="nav-link"><i class="undefined"></i>
+  Games
+</a></li></ul></div></div><div class="nav-item"><a href="/tag/" class="nav-link"><i class="iconfont reco-tag"></i>
+  标签
+</a></div><div class="nav-item"><a href="/timeline/" class="nav-link"><i class="iconfont reco-date"></i>
+  时间轴
+</a></div><div class="nav-item"><a href="/docs/mygame/mine.html" class="nav-link"><i class="iconfont reco-message"></i>
+  练手项目
+</a></div> <!----></nav> <!----> </aside> <div class="password-shadow password-wrapper-in" style="display:none;" data-v-067bd032 data-v-999d3bb4><h3 class="title" data-v-067bd032 data-v-067bd032>tomcat调优</h3> <!----> <label id="box" class="inputBox" data-v-067bd032 data-v-067bd032><input type="password" value="" data-v-067bd032> <span data-v-067bd032>Konck! Knock!</span> <button data-v-067bd032>OK</button></label> <div class="footer" data-v-067bd032 data-v-067bd032><span data-v-067bd032><i class="iconfont reco-theme" data-v-067bd032></i> <a target="blank" href="https://vuepress-theme-reco.recoluan.com" data-v-067bd032>vuePress-theme-reco</a></span> <span data-v-067bd032><i class="iconfont reco-copyright" data-v-067bd032></i> <a data-v-067bd032><span data-v-067bd032>思念虎</span>
+            
+          <span data-v-067bd032>2021/12/22 - </span>
+          2022
+        </a></span></div></div> <div data-v-999d3bb4><main class="page" style="padding-right:0;"><section><div class="page-title"><h1 class="title">tomcat调优</h1> <div data-v-10e19382><i class="iconfont reco-account" data-v-10e19382><span data-v-10e19382>思念虎</span></i> <i class="iconfont reco-date" data-v-10e19382><span data-v-10e19382>8/1/2022</span></i> <!----> <i class="tags iconfont reco-tag" data-v-10e19382><span class="tag-item" data-v-10e19382>java项目调优</span></i></div></div> <div class="theme-reco-content content__default"><h1 id="事件脉络"><a href="#事件脉络" class="header-anchor">#</a> 事件脉络</h1> <h2 id="一、使用jdk自带jvisualvm-exe工具进行远程项目内存监控"><a href="#一、使用jdk自带jvisualvm-exe工具进行远程项目内存监控" class="header-anchor">#</a> 一、使用jdk自带jvisualvm.exe工具进行远程项目内存监控</h2> <p>配置参考：
+<a href="http://t.zoukankan.com/JimmyThomas-p-12123711.html" target="_blank">jvisualvm监控远程jvm的两种连接方式</a><br>
+此处本人使用第二种JSTATD的方式，第一种jmx方式尝试几次后失败，留待以后进行尝试</p> <ol><li><p>创建 XXX.policy文件
+jdk 1.8发布包中包括一个jstatd程序，使用jstatd需要指定一个policy文件，文件的后缀为 .policy,
+比如：jstatd-all.policy的文件，
+内容为：</p> <div class="language- extra-class"><pre><code> 	grant codebase &quot;file:/usr/java/jdk1.8.0_212/lib/tools.jar&quot; {
+ 		permission java.security.AllPermission;
+ 	};
+</code></pre></div><p>或者</p> <div class="language- extra-class"><pre><code> 	grant codebase &quot;file:${java.home}/../lib/tools.jar&quot; {
+ 		permission java.security.AllPermission;
+ 	};
+</code></pre></div><p>2.启动</p> <div class="language- extra-class"><pre><code> 	./jstatd -J-Djava.security.policy=jstatd-all.policy &amp;
+</code></pre></div><p>或者指定端口</p> <div class="language- extra-class"><pre><code> 	./jstatd -J-Djava.security.policy=jstatd-all.policy -p 9016 &amp;
+</code></pre></div><p>3.在本地进行监控，推荐安装：工具-插件-Visual GC插件进行监控</p></li></ol> <h2 id="二、使用jvisualvm进行监控后发现项目异常"><a href="#二、使用jvisualvm进行监控后发现项目异常" class="header-anchor">#</a> 二、使用jvisualvm进行监控后发现项目异常</h2> <p>异常问题：YGC频繁、新生代Eden区会在迅速变满-YGC清空之间循环，因为S0,S1代并没有随着YGC使用量波动变大
+故认定存在异常线程导致频繁触发YGC</p> <h2 id="三、异常线程定位"><a href="#三、异常线程定位" class="header-anchor">#</a> 三、异常线程定位</h2> <p>参考文档：<a href="https://blog.csdn.net/ocean73737/article/details/78212663?spm=1001.2101.3001.6661.1&amp;utm_medium=distribute.pc_relevant_t0.none-task-blog-2%7Edefault%7ECTRLIST%7Edefault-1-78212663-blog-122377202.pc_relevant_multi_platform_featuressortv2dupreplace&amp;depth_1-utm_source=distribute.pc_relevant_t0.none-task-blog-2%7Edefault%7ECTRLIST%7Edefault-1-78212663-blog-122377202.pc_relevant_multi_platform_featuressortv2dupreplace&amp;utm_relevant_index=1" target="_blank">jstack 命令跟踪 java 应用的堆栈 并分析堆栈结果</a><br>
+简述步骤与相关命令：</p> <ol><li>找到项目进程id  55536</li></ol> <div class="language-linux line-numbers-mode"><pre class="language-text"><code>[root@dev-h3-test]$ ps -ef|grep java
+root      55536     1  3 09:45 ?        00:01:55 ../../jdk1.8.0_171/bin/java -Djava.util.lo...
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br></div></div><ol start="2"><li>根据进程ID定位此进程中cpu耗时最多的线程</li></ol> <div class="language-linux line-numbers-mode"><pre class="language-text"><code>[root@dev-h3-test]$ top Hp55536
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br></div></div><div class="language- extra-class"><pre><code>根据结果中的TIME+列定位到线程ID 55625
+</code></pre></div><ol start="3"><li>将线程ID装换位16进制，此处可使用命令，也可使用外部工具，命令如下</li></ol> <div class="language-linux line-numbers-mode"><pre class="language-text"><code>[root@dev-h3-test]$ printf &quot;%x\n&quot; 55625
+d949  --&gt;16进制线程ID
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br></div></div><ol start="4"><li>根据16进制线程ID在jstack中打印堆栈信息（55536进程ID，d949线程16进制ID）</li></ol> <div class="language-linux line-numbers-mode"><pre class="language-text"><code>[root@dev-h3-test]$ jstack 55536 | grep d949
+&quot;ContainerBackgroundProcessor[StandardEngine[Catalina]]&quot; #29 daemon prio=5 os_prio=0 tid=0x00007f8b941b9000 nid=0xd949 waiting on condition [0x00007f8b5cd7b000]
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br></div></div><ol start="5"><li>结果
+根据结果可以看到cpu耗时最长的线程为：ContainerBackgroundProcessor[StandardEngine[Catalina]]</li></ol> <h2 id="四、问题解决"><a href="#四、问题解决" class="header-anchor">#</a> 四、问题解决</h2> <p>经过查询根据文章<a href="https://blog.csdn.net/loophome/article/details/100693030" target="_blank">《记一次tomcat程序CPU占用高排查-backgroundProcessorDelay参数》</a><br>
+定位此进程为tomcat守护进程，Tomcat的Engine会启动一个线程（就是ContainerBackgroundProcessor），该线程每10s会发送一个发送一个事件，监听到该事件的部署配置类会自动去扫描webapp文件夹下的war包，将其加载成一个Context，即启动一个web服务。同时，该线程还会调用子容器Engine、Host、Context、Wrapper各容器组件及与它们相关的其它组件的backgroundProcess方法。<br>
+解决方法为在tomcat的server.xml的engine增加属性backgroundProcessorDelay(默认为10)，设置为900</p> <div class="language-linux line-numbers-mode"><pre class="language-text"><code>&lt;Engine name=&quot;Catalina&quot; defaultHost=&quot;localhost&quot; backgroundProcessorDelay=&quot;900&quot;&gt;
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br></div></div><p>重启tomcat项目后YGC频繁问题解决！
+PS:此处附录tomcat的server.xml engine属性清单</p> <table><thead><tr><th>属性</th> <th>描述</th> <th>默认值</th></tr></thead> <tbody><tr><td>backgroundProcessorDelay</td> <td>当前Engine及其子容器backgroundProcessor方法执行的延迟时间，包括所有Host和Context，单位s。如果子容器属性backgroundProcessorDelay的取值为非负数，将不执行。属性为正数时，tomcat将会创建一个后台线程，等待执行时间后，该线程将执行当前Engine及其所有子容器的backgroundProcessorDelay方法</td> <td>10</td></tr> <tr><td>className</td> <td>实例化Engine时使用的类名。指定类必须实现org.apache.catalina.Engine接口。不指定则使用org.apache.catalina.core.StandardEngine</td> <td></td></tr> <tr><td>defaultHost</td> <td>默认Host名称，当根据请求无法找到host时，使用默认Host处理</td> <td></td></tr> <tr><td>jvmRoute</td> <td>用于在负载均衡场景下启用粘性会话，该标识在整个集群所有tomcat中唯一，而且会附加到生成的会话标识符。通过此值，前端代理可以将某个会话定向到同一个Tomcat实例</td> <td></td></tr> <tr><td>name</td> <td>Engine的逻辑名称。当同一个server中存在多个service时，engine名必须唯一</td> <td></td></tr> <tr><td>startStopThreads</td> <td>Engine用于启动Host的线程数。如果设置为0，将使用Runtime.getRuntime().availableProcessors()的值。如果设置为负值，则使用Runtime.getRuntime().availableProcessors()+startStopThreads，如果设置结果小于1，取值为1</td> <td>1</td></tr></tbody></table> <h2 id="五、参考文档"><a href="#五、参考文档" class="header-anchor">#</a> 五、参考文档：</h2> <ol><li>本地监控远程java内存：<a href="http://t.zoukankan.com/JimmyThomas-p-12123711.html" target="_blank">《jvisualvm监控远程jvm的两种连接方式》</a></li> <li>linux定位java执行异常线程：<a href="https://blog.csdn.net/ocean73737/article/details/78212663?spm=1001.2101.3001.6661.1&amp;utm_medium=distribute.pc_relevant_t0.none-task-blog-2%7Edefault%7ECTRLIST%7Edefault-1-78212663-blog-122377202.pc_relevant_multi_platform_featuressortv2dupreplace&amp;depth_1-utm_source=distribute.pc_relevant_t0.none-task-blog-2%7Edefault%7ECTRLIST%7Edefault-1-78212663-blog-122377202.pc_relevant_multi_platform_featuressortv2dupreplace&amp;utm_relevant_index=1" target="_blank">《jstack 命令跟踪 java 应用的堆栈 并分析堆栈结果》</a></li> <li>相同问题场景：<a href="https://blog.csdn.net/loophome/article/details/100693030" target="_blank">《记一次tomcat程序CPU占用高排查-backgroundProcessorDelay参数》</a></li> <li>tomcat server.xml 配置参数：<a href="https://www.cnblogs.com/zh-dream/p/13621743.html" target="_blank">tomcat server.xml配置属性</a></li></ol></div></section> <footer class="page-edit"><!----> <div class="last-updated"><span class="prefix">Last Updated: </span> <span class="time">8/1/2022, 11:10:26 AM</span></div></footer> <!----> <div class="comments-wrapper"><!----></div> <ul class="side-bar sub-sidebar-wrapper" style="width:0;" data-v-92abcef6></ul></main> <!----></div></div></div></div><div class="global-ui"><div class="back-to-ceiling" style="right:1rem;bottom:6rem;width:2.5rem;height:2.5rem;border-radius:.25rem;line-height:2.5rem;display:none;" data-v-a008c6ba data-v-a008c6ba><svg t="1574745035067" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="5404" class="icon" data-v-a008c6ba><path d="M526.60727968 10.90185116a27.675 27.675 0 0 0-29.21455937 0c-131.36607665 82.28402758-218.69155461 228.01873535-218.69155402 394.07834331a462.20625001 462.20625001 0 0 0 5.36959153 69.94390903c1.00431239 6.55289093-0.34802892 13.13561351-3.76865779 18.80351572-32.63518765 54.11355614-51.75690182 118.55860487-51.7569018 187.94566865a371.06718723 371.06718723 0 0 0 11.50484808 91.98906777c6.53300375 25.50556257 41.68394495 28.14064038 52.69160883 4.22606766 17.37162448-37.73630017 42.14135425-72.50938081 72.80769204-103.21549295 2.18761121 3.04276886 4.15646224 6.24463696 6.40373557 9.22774369a1871.4375 1871.4375 0 0 0 140.04691725 5.34970492 1866.36093723 1866.36093723 0 0 0 140.04691723-5.34970492c2.24727335-2.98310674 4.21612437-6.18497483 6.3937923-9.2178004 30.66633723 30.70611158 55.4360664 65.4791928 72.80769147 103.21549355 11.00766384 23.91457269 46.15860503 21.27949489 52.69160879-4.22606768a371.15156223 371.15156223 0 0 0 11.514792-91.99901164c0-69.36717486-19.13165746-133.82216804-51.75690182-187.92578088-3.42062944-5.66790279-4.76302748-12.26056868-3.76865837-18.80351632a462.20625001 462.20625001 0 0 0 5.36959269-69.943909c-0.00994388-166.08943902-87.32547796-311.81420293-218.6915546-394.09823051zM605.93803103 357.87693858a93.93749974 93.93749974 0 1 1-187.89594924 6.1e-7 93.93749974 93.93749974 0 0 1 187.89594924-6.1e-7z" p-id="5405" data-v-a008c6ba></path><path d="M429.50777625 765.63860547C429.50777625 803.39355007 466.44236686 1000.39046097 512.00932183 1000.39046097c45.56695499 0 82.4922232-197.00623328 82.5015456-234.7518555 0-37.75494459-36.9345906-68.35043303-82.4922232-68.34111062-45.57627738-0.00932239-82.52019037 30.59548842-82.51086798 68.34111062z" p-id="5406" data-v-a008c6ba></path></svg></div></div></div>
+    <script src="/assets/js/app.deb02246.js" defer></script><script src="/assets/js/3.a821e41c.js" defer></script><script src="/assets/js/1.22b00a64.js" defer></script><script src="/assets/js/16.8d788fd5.js" defer></script>
+  </body>
+</html>

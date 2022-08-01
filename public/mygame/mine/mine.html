@@ -1,0 +1,104 @@
+<html>
+	<head>
+		<title>虎博站-扫雷</title>
+	</head>
+	<script src="../lib/vue.js"></script>
+	<script src="../lib/jquery-1.10.2.min.js"></script>
+	<link rel="stylesheet" href="css/mine.css"></link>
+	
+	
+	<body ondragstart="return false" oncontextmenu="return false" onselectstart="return false">
+		<!-- 主空间 -->
+		<div class="mainContent" id="main">
+		
+			<!-- 工具区域 -->
+			<div id="toolContent">
+				
+				<table class="toolContent" border="1">
+					<tr>
+						<td class="setting">
+						难度：
+							<select v-model="difficulty" :disabled="status!=0">
+									<option value="1">简单</option>
+									<option value="2">中等</option>
+									<option value="3">困难</option>
+							</select>
+							<span>{{rowNumber}}</span>*<span>{{colNumber}}</span>
+							<!--
+							<input v-model="rowNumber"  type='number' disabled/>
+							*<input v-model="colNumber"  type='number' disabled/>
+						
+							地雷总数：<input v-model="allMineNumber"  type='number' disabled/>
+								-->
+							
+						</td> 
+						<td class="timerContent" id="timer">
+							
+							<p>计时:{{time}}</p>
+						</td>
+						<td  class="buttonContent" id="buttons">
+							<p>
+							<mybutton  v-for="item in btns" v-bind:btn="item" :key="item.code" ></mybutton>
+							</p>
+						</td>
+						<td class="lastNumberContent" id="lastNumberContent">
+							<p>
+								剩余地雷个数:{{lastNumber}}
+							</p>
+						</td>
+					</tr>
+			
+					
+				</table>
+			
+				
+			</div>
+			
+			
+			<!-- 雷区 -->
+			<div class="mineContent" id="mineContent">
+				
+				<table border="1px" class="mineTable"  cellspacing="0" cellpadding="0">
+					<tr v-for="(rd,rindex) in mine">
+						
+						<td v-for="(cd,cindex) in rd" @mousedown="tdClick(rindex,cindex,$event)"  class="mineTd"
+							v-bind:class="{ 'isMine':cd.isMine,'normal': cd.status==0,'doubt': cd.status==1,'define': cd.status==2 }"
+							>
+							<div class="normal" v-if="cd.status==0">
+								
+							</div>
+							<div class="define" v-if="cd.status==1">
+								<span>B</span>
+							</div>
+							<div class="doubt" v-if="cd.status==2">
+								<span>?</span>
+							</div>
+							<div class="open" v-if="cd.status==3">
+								<span>{{cd.roundNum==0?'':cd.roundNum}}</span>
+							</div>
+							<div class="boom" v-if="cd.status==4">
+								<span>炸</span>
+							</div>
+						</td>
+						
+					</tr>
+					
+					
+				</table>
+				
+			
+			
+			</div>
+			
+			
+		
+		</div>
+	
+	
+	
+	</body>
+	
+	<script src="js/mine.js" defer></script>
+
+	
+</html>
